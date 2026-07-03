@@ -588,7 +588,7 @@ class _AdminPageWidgetState extends State<AdminPageWidget> {
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           25.0, 0.0, 0.0, 0.0),
                                       child: Text(
-                                        'Confirm Rides Queue',
+                                        'Confirm Ride Bookings Queue',
                                         textAlign: TextAlign.start,
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
