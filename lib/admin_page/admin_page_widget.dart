@@ -47,7 +47,7 @@ class _AdminPageWidgetState extends State<AdminPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Title(
-        title: 'AdminPage',
+        title: 'Admin Options',
         color: FlutterFlowTheme.of(context).primary.withAlpha(0XFF),
         child: GestureDetector(
           onTap: () {
@@ -115,7 +115,7 @@ class _AdminPageWidgetState extends State<AdminPageWidget> {
                         children: [
                           Expanded(
                             child: StreamBuilder<List<VerifiedPaymentsRow>>(
-                              stream: SupaFlow.client.from('verified_payments').stream(primaryKey: ['id']).eq('verified', false).map((r) => r.map((e) => VerifiedPaymentsRow(e)).toList()),
+                              stream: SupaFlow.client.from('verified_payments').stream(primaryKey: ['id']).map((r) => r.map((e) => VerifiedPaymentsRow(e)).where((e) => e.verified == false).toList()),
                               builder: (context, snapshot) => wrapWithModel(
                                 model: _model.metricCardModel1,
                                 updateCallback: () => safeSetState(() {}),
@@ -131,7 +131,7 @@ class _AdminPageWidgetState extends State<AdminPageWidget> {
                           const SizedBox(width: 16),
                           Expanded(
                             child: StreamBuilder<List<VerifiedPaymentsRow>>(
-                              stream: SupaFlow.client.from('verified_payments').stream(primaryKey: ['id']).eq('verified', true).map((r) => r.map((e) => VerifiedPaymentsRow(e)).toList()),
+                              stream: SupaFlow.client.from('verified_payments').stream(primaryKey: ['id']).map((r) => r.map((e) => VerifiedPaymentsRow(e)).where((e) => e.verified == true).toList()),
                               builder: (context, snapshot) => wrapWithModel(
                                 model: _model.metricCardModel2,
                                 updateCallback: () => safeSetState(() {}),
@@ -187,7 +187,7 @@ class _AdminPageWidgetState extends State<AdminPageWidget> {
 
   Widget _buildSectionTitle(String title) {
     return Align(
-      alignment: AlignmentDirectional.centerLeft,
+      alignment: AlignmentDirectional.centerStart,
       child: Text(
         title,
         style: FlutterFlowTheme.of(context).titleMedium.override(

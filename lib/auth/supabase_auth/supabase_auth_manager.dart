@@ -23,7 +23,7 @@ class SupabaseAuthManager extends AuthManager
     try {
       await SupaFlow.client.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: kIsWeb ? null : 'com.m://login-callback',
+        redirectTo: kIsWeb ? null : 'ridesharel://ridesharel.com/login-callback',
       );
       // For OAuth, the user is redirected, so we don't return the user object immediately here.
       return null;
@@ -121,8 +121,11 @@ class SupabaseAuthManager extends AuthManager
     String? redirectTo,
   }) async {
     try {
-      await SupaFlow.client.auth
-          .resetPasswordForEmail(email, redirectTo: redirectTo);
+      await SupaFlow.client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: redirectTo ??
+            (kIsWeb ? null : 'ridesharel://ridesharel.com/reset-password'),
+      );
     } on AuthException catch (e) {
       if (!context.mounted) {
         return null;

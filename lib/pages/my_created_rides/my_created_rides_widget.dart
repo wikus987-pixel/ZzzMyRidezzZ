@@ -131,7 +131,7 @@ class _MyCreatedRidesWidgetState extends State<MyCreatedRidesWidget> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromSTEB(16, 24, 16, 8),
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 24, 16, 8),
                 child: Row(
                   children: [
                     Expanded(
