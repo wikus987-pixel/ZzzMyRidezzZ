@@ -47,7 +47,6 @@ class _AdminPageWidgetState extends State<AdminPageWidget> {
   @override
   Widget build(BuildContext context) {
     return Title(
-        title: 'Admin Options',
         color: FlutterFlowTheme.of(context).primary.withAlpha(0XFF),
         child: GestureDetector(
           onTap: () {
@@ -63,117 +62,66 @@ class _AdminPageWidgetState extends State<AdminPageWidget> {
               leading: FlutterFlowIconButton(
                 borderRadius: 30.0,
                 buttonSize: 60.0,
-                icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 30.0),
-                onPressed: () => context.pop(),
               ),
-              title: const Text(
                 'Admin Options',
-                style: TextStyle(color: Colors.white, fontSize: 22.0, fontWeight: FontWeight.bold),
               ),
-              centerTitle: true,
               elevation: 2.0,
             ),
-            body: RefreshIndicator(
-              onRefresh: () async => setState(() {}),
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
                   child: Column(
                     children: [
-                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Dashboard', style: FlutterFlowTheme.of(context).headlineSmall),
-                              Text('Payment Approvals Portal', style: FlutterFlowTheme.of(context).labelMedium),
                             ],
                           ),
                           FlutterFlowIconButton(
                             borderRadius: 16.0,
                             buttonSize: 40.0,
                             fillColor: FlutterFlowTheme.of(context).primary,
-                            icon: const Icon(Icons.add_rounded, color: Colors.white, size: 24.0),
                             onPressed: () async {
                               await showModalBottomSheet(
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 context: context,
-                                builder: (context) => Padding(
-                                  padding: MediaQuery.viewInsetsOf(context),
-                                  child: const CleanCompactModernWidget(),
                                 ),
-                              ).then((value) => setState(() {}));
                             },
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
                       Row(
                         children: [
                           Expanded(
-                            child: StreamBuilder<List<VerifiedPaymentsRow>>(
-                              stream: SupaFlow.client.from('verified_payments').stream(primaryKey: ['id']).map((r) => r.map((e) => VerifiedPaymentsRow(e)).where((e) => e.verified == false).toList()),
-                              builder: (context, snapshot) => wrapWithModel(
                                 model: _model.metricCardModel1,
-                                updateCallback: () => safeSetState(() {}),
                                 child: MetricCardWidget(
                                   label: 'Pending',
-                                  value: (snapshot.data?.length ?? 0).toString(),
-                                  tone: FlutterFlowTheme.of(context).warning,
-                                  icon: const Icon(Icons.hourglass_empty_rounded),
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 16),
                           Expanded(
-                            child: StreamBuilder<List<VerifiedPaymentsRow>>(
-                              stream: SupaFlow.client.from('verified_payments').stream(primaryKey: ['id']).map((r) => r.map((e) => VerifiedPaymentsRow(e)).where((e) => e.verified == true).toList()),
-                              builder: (context, snapshot) => wrapWithModel(
                                 model: _model.metricCardModel2,
-                                updateCallback: () => safeSetState(() {}),
                                 child: MetricCardWidget(
                                   label: 'Verified',
-                                  value: (snapshot.data?.length ?? 0).toString(),
-                                  tone: FlutterFlowTheme.of(context).success,
-                                  icon: const Icon(Icons.check_circle_outline_rounded),
                                 ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
-                      _buildSectionTitle('User Verification Queue'),
-                      const SizedBox(height: 16),
                       SizedBox(
-                        height: 300,
-                        child: custom_widgets.PendingApprovalsList(
-                          width: MediaQuery.sizeOf(context).width,
-                          height: 300,
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      _buildSectionTitle('Ride Bookings Queue'),
-                      const SizedBox(height: 16),
                       SizedBox(
-                        height: 300,
                         child: custom_widgets.BookingApprovalsList(
                           width: MediaQuery.sizeOf(context).width,
-                          height: 300,
                         ),
                       ),
                       const SizedBox(height: 32),
-                      _buildSectionTitle('Completed Rides (Payouts)'),
-                      const SizedBox(height: 16),
                       SizedBox(
-                        height: 300,
                         child: custom_widgets.CompletedRidesList(
                           width: MediaQuery.sizeOf(context).width,
-                          height: 300,
                         ),
                       ),
                     ],
@@ -182,18 +130,7 @@ class _AdminPageWidgetState extends State<AdminPageWidget> {
               ),
             ),
           ),
-        ));
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Text(
-        title,
-        style: FlutterFlowTheme.of(context).titleMedium.override(
-              font: GoogleFonts.interTight(fontWeight: FontWeight.bold),
             ),
       ),
-    );
   }
 }
