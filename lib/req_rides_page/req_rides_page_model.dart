@@ -1,18 +1,9 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/supabase/supabase.dart';
-import '/components/datetime_picker_widget.dart';
-import '/components/location_input_arriva_widget.dart';
-import '/components/location_input_widget.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
-import '/flutter_flow/custom_functions.dart' as functions;
+import '/components/location_input_widget.dart';
+import '/components/location_input_arriva_widget.dart';
+import '/components/datetime_picker_widget.dart';
 import 'req_rides_page_widget.dart' show ReqRidesPageWidget;
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class ReqRidesPageModel extends FlutterFlowModel<ReqRidesPageWidget> {
   ///  State fields for stateful widgets in this page.
@@ -29,6 +20,13 @@ class ReqRidesPageModel extends FlutterFlowModel<ReqRidesPageWidget> {
   late DatetimePickerModel datetimePickerModel3;
   // Model for DatetimePicker.
   late DatetimePickerModel datetimePickerModel4;
+
+  // Selected date-times
+  DateTime? departureDateTime;
+  DateTime? arrivalDateTime;
+
+  // Local state for seats needed
+  int seatsNeeded = 1;
 
   @override
   void initState(BuildContext context) {

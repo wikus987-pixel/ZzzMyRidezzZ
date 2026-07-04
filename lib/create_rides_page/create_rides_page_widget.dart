@@ -38,7 +38,7 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
 
-    _model.textController3 ??= TextEditingController();
+    _model.textController3 ??= TextEditingController(text: '1');
     _model.textFieldFocusNode3 ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
@@ -217,24 +217,40 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
                       ),
                       const SizedBox(width: 16.0),
                       Expanded(
-                        child: TextFormField(
-                          controller: _model.textController3,
-                          focusNode: _model.textFieldFocusNode3,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Seats Available',
-                            labelStyle: FlutterFlowTheme.of(context).labelMedium,
-                            hintText: 'e.g. 3',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).alternate),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).primary),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(color: FlutterFlowTheme.of(context).alternate),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.remove_circle_outline),
+                                onPressed: () {
+                                  int current = int.tryParse(_model.textController3.text) ?? 1;
+                                  if (current > 1) {
+                                    setState(() => _model.textController3.text = (current - 1).toString());
+                                  }
+                                },
+                              ),
+                              Text(
+                                _model.textController3.text.isEmpty ? '1' : _model.textController3.text,
+                                style: FlutterFlowTheme.of(context).bodyLarge.override(
+                                  font: GoogleFonts.inter(),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.add_circle_outline),
+                                onPressed: () {
+                                  int current = int.tryParse(_model.textController3.text) ?? 1;
+                                  setState(() => _model.textController3.text = (current + 1).toString());
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),

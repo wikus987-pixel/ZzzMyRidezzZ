@@ -41,7 +41,7 @@ class _BookingApprovalsListState extends State<BookingApprovalsList> {
           if (snapshot.hasError) {
             return const Center(child: Text('Error loading data'));
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(color: Color(0xFF4B39EF)),
             );
@@ -164,37 +164,48 @@ class _BookingApprovalCardState extends State<BookingApprovalCard> {
                         value: booking.status == 'Booked',
                         activeColor: const Color(0xFF4B39EF),
                         onChanged: (bool value) async {
-                          if (!value || ride == null) return;
+                          if (ride == null) return;
                           setState(() => _processing = true);
 
-                          final remaining = (ride.seatsAvailable ?? 0) - seats;
-                          if (remaining < 0) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text('Not enough seats available'),
-                                ),
-                              );
-                              setState(() => _processing = false);
+                          if (value) {
+                            final remaining = (ride.seatsAvailable ?? 0) - seats;
+                            if (remaining < 0) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Not enough seats available')),
+                                );
+                                setState(() => _processing = false);
+                              }
+                              return;
                             }
-                            return;
+                            await RidesTable().update(
+                              data: {
+                                'seats_available': remaining,
+                                if (remaining == 0) 'RideStatus': 'Booked',
+                              },
+                              matchingRows: (q) => q.eq('id', ride.id),
+                            );
+                            await PendingPaymentsTable().update(
+                              data: {'status': 'Booked'},
+                              matchingRows: (q) => q.eq('id', booking.id),
+                            );
+                          } else {
+                            // Un-book logic
+                            final restored = (ride.seatsAvailable ?? 0) + seats;
+                            await RidesTable().update(
+                              data: {
+                                'seats_available': restored,
+                                'RideStatus': 'Open',
+                              },
+                              matchingRows: (q) => q.eq('id', ride.id),
+                            );
+                            await PendingPaymentsTable().update(
+                              data: {'status': 'Pending'},
+                              matchingRows: (q) => q.eq('id', booking.id),
+                            );
                           }
 
-                          await RidesTable().update(
-                            data: {
-                              'seats_available': remaining,
-                              if (remaining == 0) 'RideStatus': 'Booked',
-                            },
-                            matchingRows: (q) => q.eq('id', ride.id),
-                          );
-                          await PendingPaymentsTable().update(
-                            data: {'status': 'Booked'},
-                            matchingRows: (q) => q.eq('id', booking.id),
-                          );
-                          if (mounted) {
-                             setState(() => _processing = false);
-                          }
+                          if (mounted) setState(() => _processing = false);
                         },
                       ),
               ],

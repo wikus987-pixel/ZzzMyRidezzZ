@@ -71,10 +71,18 @@ class _TextField2WidgetState extends State<TextField2Widget> {
     super.initState();
     _model = createModel(context, () => TextField2Model());
 
-    _model.inputTextController ??= TextEditingController(text: widget!.value);
+    _model.inputTextController ??= TextEditingController(text: widget.value);
     _model.inputFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+  }
+
+  @override
+  void didUpdateWidget(covariant TextField2Widget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != oldWidget.value && _model.inputTextController != null) {
+      _model.inputTextController!.text = widget.value;
+    }
   }
 
   @override

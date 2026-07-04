@@ -184,6 +184,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => MybookedRidesWidget(),
             ),
             FFRoute(
+              name: MyCreatedRidesWidget.routeName,
+              path: MyCreatedRidesWidget.routePath,
+              requireAuth: true,
+              builder: (context, params) => MyCreatedRidesWidget(),
+            ),
+            FFRoute(
               name: LoginPage2Widget.routeName,
               path: LoginPage2Widget.routePath,
               builder: (context, params) => LoginPage2Widget(),

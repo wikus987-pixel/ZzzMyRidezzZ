@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '/auth/auth_manager.dart';
 import '/backend/supabase/supabase.dart';
@@ -10,10 +11,32 @@ import 'supabase_user_provider.dart';
 
 export '/auth/base_auth_user_provider.dart';
 
-class SupabaseAuthManager extends AuthManager with EmailSignInManager {
+class SupabaseAuthManager extends AuthManager
+    with EmailSignInManager, GoogleSignInManager {
   @override
   Future signOut() {
     return SupaFlow.client.auth.signOut();
+  }
+
+  @override
+  Future<BaseAuthUser?> signInWithGoogle(BuildContext context) async {
+    try {
+      await SupaFlow.client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: kIsWeb ? null : 'com.m://login-callback',
+      );
+      // For OAuth, the user is redirected, so we don't return the user object immediately here.
+      return null;
+    } on AuthException catch (e) {
+      if (!context.mounted) {
+        return null;
+      }
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.message}')),
+      );
+      return null;
+    }
   }
 
   @override

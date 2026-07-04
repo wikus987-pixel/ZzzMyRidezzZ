@@ -39,7 +39,7 @@ class _PendingApprovalsListState extends State<PendingApprovalsList> {
           if (snapshot.hasError) {
             return const Center(child: Text('Error loading data'));
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(color: Color(0xFF4B39EF)),
             );
@@ -113,18 +113,19 @@ class _PendingApprovalsListState extends State<PendingApprovalsList> {
                         value: payment.verified,
                         activeColor: const Color(0xFF4B39EF),
                         onChanged: (bool value) async {
-                          if (value) {
-                            // Optimistically update local state if needed,
-                            // but StreamBuilder will handle it when DB changes.
+                          try {
                             await VerifiedPaymentsTable().update(
-                              data: {'verified': true},
+                              data: {'verified': value, 'status': value ? 'verified' : 'pending'},
                               matchingRows: (q) => q.eq('id', payment.id),
                             );
-                            await UsersTable().update(
-                              data: {'IsSignupPaid': true},
-                              matchingRows: (q) =>
-                                  q.eq('email', emailStr),
-                            );
+                            if (payment.email != null) {
+                              await UsersTable().update(
+                                data: {'IsSignupPaid': value},
+                                matchingRows: (q) => q.eq('email', payment.email!),
+                              );
+                            }
+                          } catch (e) {
+                             debugPrint('Error toggling verification: $e');
                           }
                         },
                       ),

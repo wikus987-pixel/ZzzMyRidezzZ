@@ -86,24 +86,25 @@ class _RideDetailsScreenWidgetState extends State<RideDetailsScreenWidget>
     return StreamBuilder<List<RidesRow>>(
       stream: rideRowListStream(widget.selectedRide),
       builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Error loading ride details'));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
           return Scaffold(
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    FlutterFlowTheme.of(context).primary,
-                  ),
-                ),
-              ),
+            body: const Center(
+              child: CircularProgressIndicator(),
             ),
           );
         }
-        List<RidesRow> rideDetailsScreenRidesRowList = snapshot.data!;
+        final rides = snapshot.data ?? [];
+        if (rides.isEmpty) {
+           return Scaffold(
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            body: const Center(child: Text('Ride not found')),
+          );
+        }
+        final rideDetailsScreenRidesRowList = rides;
 
         return Title(
             title: 'rideDetails_Screen',
@@ -171,22 +172,10 @@ class _RideDetailsScreenWidgetState extends State<RideDetailsScreenWidget>
                     child: StreamBuilder<List<RidesRow>>(
                       stream: rideRowListStream(widget.selectedRide),
                       builder: (context, snapshot) {
-                        // Customize what your widget looks like when it's loading.
-                        if (!snapshot.hasData) {
-                          return Center(
-                            child: SizedBox(
-                              width: 50.0,
-                              height: 50.0,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  FlutterFlowTheme.of(context).primary,
-                                ),
-                              ),
-                            ),
-                          );
+                        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+                          return const Center(child: CircularProgressIndicator());
                         }
-                        List<RidesRow> conditionalBuilderRidesRowList =
-                            snapshot.data!;
+                        final conditionalBuilderRidesRowList = snapshot.data ?? [];
 
                         return Builder(
                           builder: (context) {
@@ -214,40 +203,16 @@ class _RideDetailsScreenWidgetState extends State<RideDetailsScreenWidget>
                                               AlignmentDirectional(-1.0, 0.0),
                                           child:
                                               StreamBuilder<List<RidesRow>>(
-stream: rideRowListStream(widget.selectedRide),
+                                            stream: rideRowListStream(widget.selectedRide),
                                             builder: (context, snapshot) {
-                                              // Customize what your widget looks like when it's loading.
-                                              if (!snapshot.hasData) {
-                                                return Center(
-                                                  child: SizedBox(
-                                                    width: 50.0,
-                                                    height: 50.0,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      valueColor:
-                                                          AlwaysStoppedAnimation<
-                                                              Color>(
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .primary,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
+                                              if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+                                                return const Center(child: CircularProgressIndicator());
                                               }
-                                              List<RidesRow>
-                                                  columnRidesRowList =
-                                                  snapshot.data!;
-                                              // Return an empty Container when the item does not exist.
-                                              if (snapshot.data!.isEmpty) {
+                                              final columnRidesRowList = snapshot.data ?? [];
+                                              if (columnRidesRowList.isEmpty) {
                                                 return Container();
                                               }
-                                              final columnRidesRow =
-                                                  columnRidesRowList
-                                                          .isNotEmpty
-                                                      ? columnRidesRowList
-                                                          .first
-                                                      : null;
+                                              final columnRidesRow = columnRidesRowList.first;
 
                                               return Column(
                                                 mainAxisSize: MainAxisSize.max,
@@ -274,27 +239,11 @@ stream: rideRowListStream(widget.selectedRide),
                                                             widget.selectedRide),
                                                         builder: (context,
                                                             snapshot) {
-                                                          if (!snapshot
-                                                                  .hasData ||
-                                                              snapshot
-                                                                  .data!
-                                                                  .isEmpty) {
-                                                            return Center(
-                                                              child: SizedBox(
-                                                                width: 50.0,
-                                                                height: 50.0,
-                                                                child:
-                                                                    CircularProgressIndicator(
-                                                                  valueColor:
-                                                                      AlwaysStoppedAnimation<
-                                                                          Color>(
-                                                                    FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primary,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
+                                                          if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+                                                            return const Center(child: CircularProgressIndicator());
+                                                          }
+                                                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                                            return Container();
                                                           }
 
                                                           final textRidesRow =

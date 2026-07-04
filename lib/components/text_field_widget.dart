@@ -71,14 +71,18 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     super.initState();
     _model = createModel(context, () => TextFieldModel());
 
-    _model.inputTextController ??= TextEditingController(
-        text: valueOrDefault<String>(
-      widget!.value,
-      'SlotValue(\$full_name)',
-    ));
+    _model.inputTextController ??= TextEditingController(text: widget.value);
     _model.inputFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+  }
+
+  @override
+  void didUpdateWidget(covariant TextFieldWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != oldWidget.value && _model.inputTextController != null) {
+      _model.inputTextController!.text = widget.value;
+    }
   }
 
   @override

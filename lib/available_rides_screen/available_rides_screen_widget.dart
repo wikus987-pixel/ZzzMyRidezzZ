@@ -28,27 +28,29 @@ class AvailableRidesScreenWidget extends StatefulWidget {
 class _AvailableRidesScreenWidgetState
     extends State<AvailableRidesScreenWidget> {
   late AvailableRidesScreenModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  
+  String _searchTerm = '';
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => AvailableRidesScreenModel());
-
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
     _model.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Title(
-      title: 'available_Rides_Screen',
+      title: 'Available Rides',
       color: FlutterFlowTheme.of(context).primary.withAlpha(0XFF),
       child: GestureDetector(
         onTap: () {
@@ -61,29 +63,21 @@ class _AvailableRidesScreenWidgetState
           appBar: AppBar(
             backgroundColor: FlutterFlowTheme.of(context).primary,
             automaticallyImplyLeading: false,
-            title: Align(
-              alignment: AlignmentDirectional(0.0, 0.0),
-              child: Text(
-                'Available Rides',
-                style: FlutterFlowTheme.of(context).headlineMedium.override(
-                      font: GoogleFonts.interTight(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                      ),
-                      color: FlutterFlowTheme.of(context).warning,
-                      fontSize: 40.0,
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                    ),
-              ),
+            title: Text(
+              'Available Rides',
+              style: FlutterFlowTheme.of(context).headlineMedium.override(
+                    font: GoogleFonts.interTight(fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontSize: 22,
+                  ),
             ),
-            actions: [],
-            centerTitle: false,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+                onPressed: () => setState(() {}),
+              ),
+            ],
+            centerTitle: true,
             elevation: 2.0,
           ),
           body: SafeArea(
@@ -91,6 +85,27 @@ class _AvailableRidesScreenWidgetState
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextFormField(
+                    controller: _searchController,
+                    onChanged: (val) => setState(() => _searchTerm = val.toLowerCase()),
+                    decoration: InputDecoration(
+                      hintText: 'Search by town...',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _searchTerm.isNotEmpty ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() => _searchTerm = '');
+                        },
+                      ) : null,
+                      filled: true,
+                      fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: StreamBuilder<List<RidesRow>>(
                     stream: SupaFlow.client
@@ -99,8 +114,13 @@ class _AvailableRidesScreenWidgetState
                         .order('departure_time')
                         .map((rows) => rows
                             .map((r) => RidesRow(r))
-                            .where((r) =>
-                                r.rideStatus?.toLowerCase() != 'completed')
+                            .where((r) {
+                              final matchStatus = r.rideStatus?.toLowerCase() != 'completed';
+                              final matchSearch = _searchTerm.isEmpty || 
+                                (r.departureLocation?.toLowerCase().contains(_searchTerm) ?? false) ||
+                                (r.arrivalLocation?.toLowerCase().contains(_searchTerm) ?? false);
+                              return matchStatus && matchSearch;
+                            })
                             .toList()),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
@@ -112,21 +132,13 @@ class _AvailableRidesScreenWidgetState
                         );
                       }
 
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: SizedBox(
-                            width: 50.0,
-                            height: 50.0,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                FlutterFlowTheme.of(context).primary,
-                              ),
-                            ),
-                          ),
+                      if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
                       }
 
-                      final rides = snapshot.data!;
+                      final rides = snapshot.data ?? [];
 
                       if (rides.isEmpty) {
                         return Center(
