@@ -88,12 +88,12 @@ class _MyCreatedRidesWidgetState extends State<MyCreatedRidesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (currentUserUid == null || currentUserUid!.isEmpty) {
+    if (currentUserUid.isEmpty) {
       return const Scaffold(body: Center(child: Text('Please log in again')));
     }
     return Title(
       title: 'My Profile',
-      color: FlutterFlowTheme.of(context).primary.withAlpha(0XFF),
+      color: FlutterFlowTheme.of(context).primary,
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -181,9 +181,9 @@ class _MyCreatedRidesWidgetState extends State<MyCreatedRidesWidget> {
   }
 
   Widget _buildInfoTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: const PersonalInfoSectionWidget(),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(16.0),
+      child: PersonalInfoSectionWidget(),
     );
   }
 
@@ -284,7 +284,7 @@ class _MyCreatedRidesWidgetState extends State<MyCreatedRidesWidget> {
                                   ],
                                 ),
                               ),
-                              const Icon(Icons.arrow_forward, color: Colors.white70),
+                              const Icon(Icons.east_rounded, color: Colors.white70),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,

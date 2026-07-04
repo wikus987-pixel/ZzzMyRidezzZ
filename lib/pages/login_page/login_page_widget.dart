@@ -205,8 +205,13 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
           onPressed: () => authManager.signInWithGoogle(context),
           text: 'Continue with Google',
           icon: const Icon(Icons.login_rounded, color: Colors.white, size: 20),
-          options: _buttonOptions().copyWith(
+          options: FFButtonOptions(
+            width: double.infinity,
+            height: 50,
             color: const Color(0xFF4285F4),
+            textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            borderRadius: BorderRadius.circular(12),
+            elevation: 2,
           ),
         ),
       ],
@@ -256,7 +261,14 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
         FFButtonWidget(
           onPressed: () => launchURL('mailto:rideshare8855@gmail.com'),
           text: 'Email Proof of Payment',
-          options: _buttonOptions().copyWith(color: FlutterFlowTheme.of(context).secondary),
+          options: FFButtonOptions(
+            width: double.infinity,
+            height: 50,
+            color: FlutterFlowTheme.of(context).secondary,
+            textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            borderRadius: BorderRadius.circular(12),
+            elevation: 2,
+          ),
         ),
         const SizedBox(height: 24),
         _buildUnlockableCreateAccountButton(),
@@ -275,7 +287,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
     if (email.isEmpty) return const SizedBox.shrink();
 
     return StreamBuilder<List<VerifiedPaymentsRow>>(
-      stream: SupaFlow.client.from('verified_payments').stream(primaryKey: ['id']).eq('email', email).eq('verified', true).map((r) => r.map((e) => VerifiedPaymentsRow(e)).toList()),
+      stream: SupaFlow.client.from('verified_payments').stream(primaryKey: ['id']).map((r) => r.map((e) => VerifiedPaymentsRow(e)).where((e) => e.email?.toLowerCase().trim() == email && e.verified).toList()),
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           return FFButtonWidget(
@@ -288,7 +300,14 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
               if (user != null) context.pushNamedAuth(Screen3Widget.routeName, context.mounted);
             },
             text: 'Create Account',
-            options: _buttonOptions().copyWith(color: FlutterFlowTheme.of(context).success),
+            options: FFButtonOptions(
+              width: double.infinity,
+              height: 52.0,
+              color: FlutterFlowTheme.of(context).success,
+              textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              borderRadius: BorderRadius.circular(12.0),
+              elevation: 2,
+            ),
           );
         }
         return const SizedBox.shrink();
