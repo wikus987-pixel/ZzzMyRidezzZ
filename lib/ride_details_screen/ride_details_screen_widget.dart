@@ -402,12 +402,12 @@ class _RideDetailsScreenWidgetState extends State<RideDetailsScreenWidget>
                       }
                       await _confirmBooking(ride, _model.dropDownValue ?? 0, _model.parcelDropDownValue ?? 0);
                     },
-                    text: 'Submit Booking (Booking will be cancelled if proof of payment is not received in 30min)',
+                    text: 'Submit Booking (No Payment) - Booking will be cancelled if proof of payment is not received in 30min',
                     options: FFButtonOptions(
                       width: double.infinity,
                       height: 65,
                       color: FlutterFlowTheme.of(context).secondary,
-                      textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                      textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11),
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
