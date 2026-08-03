@@ -1,11 +1,8 @@
-import '/components/switch_component2_widget.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/components/switch_component2_widget.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'toggle_switch_verified_model.dart';
 export 'toggle_switch_verified_model.dart';
 
@@ -20,8 +17,8 @@ class ToggleSwitchVerifiedWidget extends StatefulWidget {
     super.key,
     String? label,
     bool? active,
-  })  : this.label = label ?? '',
-        this.active = active ?? false;
+  })  : label = label ?? '',
+        active = active ?? false;
 
   final String label;
   final bool active;
@@ -69,48 +66,46 @@ class _ToggleSwitchVerifiedWidgetState
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Container(
-          child: Align(
-            alignment: AlignmentDirectional(0.0, -1.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  widget!.active.toString(),
-                  style: FlutterFlowTheme.of(context).bodyLarge.override(
-                        font: GoogleFonts.inter(
-                          fontWeight:
-                              FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                        ),
-                        color: FlutterFlowTheme.of(context).primaryText,
-                        letterSpacing: 0.0,
+        padding: const EdgeInsets.all(16.0),
+        child: Align(
+          alignment: const AlignmentDirectional(0.0, -1.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                widget.active.toString(),
+                style: FlutterFlowTheme.of(context).bodyLarge.override(
+                      font: GoogleFonts.inter(
                         fontWeight:
                             FlutterFlowTheme.of(context).bodyLarge.fontWeight,
                         fontStyle:
                             FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                        lineHeight: 1.4,
                       ),
-                ),
-                wrapWithModel(
-                  model: _model.switchModel,
-                  updateCallback: () => safeSetState(() {}),
-                  child: SwitchComponent2Widget(
-                    label: '',
-                    labelPresent: false,
-                    variant: 'iOS',
-                    active: valueOrDefault<bool>(
-                      widget!.active,
-                      false,
+                      color: FlutterFlowTheme.of(context).primaryText,
+                      letterSpacing: 0.0,
+                      fontWeight:
+                          FlutterFlowTheme.of(context).bodyLarge.fontWeight,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                      lineHeight: 1.4,
                     ),
+              ),
+              wrapWithModel(
+                model: _model.switchModel,
+                updateCallback: () => safeSetState(() {}),
+                child: SwitchComponent2Widget(
+                  label: '',
+                  labelPresent: false,
+                  variant: 'iOS',
+                  active: valueOrDefault<bool>(
+                    widget.active,
+                    false,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

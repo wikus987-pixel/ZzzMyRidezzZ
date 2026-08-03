@@ -1,12 +1,12 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/supabase/supabase.dart';
-import '/components/datetime_picker_widget.dart';
-import '/components/location_input_arriva_widget.dart';
-import '/components/location_input_widget.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:ride_share_supa/auth/supabase_auth/auth_util.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/components/datetime_picker_widget.dart';
+import 'package:ride_share_supa/components/location_input_arriva_widget.dart';
+import 'package:ride_share_supa/components/location_input_widget.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_icon_button.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'req_rides_page_model.dart';
@@ -53,13 +53,13 @@ class _ReqRidesPageWidgetState extends State<ReqRidesPageWidget> {
       firstDate: now.subtract(const Duration(days: 1)),
       lastDate: now.add(const Duration(days: 365)),
     );
-    if (date == null) return null;
+    if (date == null || !mounted) return null;
 
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(base),
     );
-    if (time == null) return null;
+    if (time == null || !mounted) return null;
 
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
@@ -137,7 +137,7 @@ class _ReqRidesPageWidgetState extends State<ReqRidesPageWidget> {
                           model: _model.locationInputModel,
                           updateCallback: () => safeSetState(() {}),
                           child: const LocationInputWidget(
-                            label: 'From',
+                            label: 'Pickup Location',
                             hint: 'Enter pickup location',
                           ),
                         ),
@@ -145,7 +145,10 @@ class _ReqRidesPageWidgetState extends State<ReqRidesPageWidget> {
                         wrapWithModel(
                           model: _model.locationInputArrivaModel,
                           updateCallback: () => safeSetState(() {}),
-                          child: const LocationInputArrivaWidget(),
+                          child: const LocationInputArrivaWidget(
+                            label: 'Drop off Location',
+                            hint: 'Enter destination',
+                          ),
                         ),
                         const SizedBox(height: 24.0),
                         Text(
@@ -254,7 +257,7 @@ class _ReqRidesPageWidgetState extends State<ReqRidesPageWidget> {
                                       size: 24.0,
                                     ),
                                     onPressed: () {
-                                      if (_model.seatsNeeded > 1) {
+                                      if (_model.seatsNeeded > 0) {
                                         setState(() => _model.seatsNeeded--);
                                       }
                                     },
@@ -278,6 +281,85 @@ class _ReqRidesPageWidgetState extends State<ReqRidesPageWidget> {
                                     onPressed: () {
                                       if (_model.seatsNeeded < 10) {
                                         setState(() => _model.seatsNeeded++);
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24.0),
+                        Text(
+                          'Parcel Requirements',
+                          textAlign: TextAlign.center,
+                          style: FlutterFlowTheme.of(context).titleMedium.override(
+                                font: GoogleFonts.interTight(fontWeight: FontWeight.w600),
+                              ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                            borderRadius: BorderRadius.circular(24.0),
+                            border: Border.all(
+                              color: FlutterFlowTheme.of(context).alternate,
+                              width: 1.0,
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.inventory_2_rounded,
+                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                    size: 24.0,
+                                  ),
+                                  const SizedBox(width: 16.0),
+                                  Text(
+                                    'Parcels Needed',
+                                    style: FlutterFlowTheme.of(context).bodyLarge,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  FlutterFlowIconButton(
+                                    borderRadius: 20.0,
+                                    buttonSize: 40.0,
+                                    icon: Icon(
+                                      Icons.remove_circle_outline_rounded,
+                                      color: FlutterFlowTheme.of(context).primary,
+                                      size: 24.0,
+                                    ),
+                                    onPressed: () {
+                                      if (_model.parcelsNeeded > 0) {
+                                        setState(() => _model.parcelsNeeded--);
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Text(
+                                    _model.parcelsNeeded.toString(),
+                                    style: FlutterFlowTheme.of(context).titleMedium.override(
+                                          font: GoogleFonts.interTight(fontWeight: FontWeight.bold),
+                                        ),
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  FlutterFlowIconButton(
+                                    borderRadius: 20.0,
+                                    buttonSize: 40.0,
+                                    icon: Icon(
+                                      Icons.add_circle_outline_rounded,
+                                      color: FlutterFlowTheme.of(context).primary,
+                                      size: 24.0,
+                                    ),
+                                    onPressed: () {
+                                      if (_model.parcelsNeeded < 20) {
+                                        setState(() => _model.parcelsNeeded++);
                                       }
                                     },
                                   ),
@@ -316,21 +398,21 @@ class _ReqRidesPageWidgetState extends State<ReqRidesPageWidget> {
                                 'DepartureTime': supaSerialize<DateTime>(departureTime),
                                 'ArrivalLocation': _model.locationInputArrivaModel.textTextController.text.trim(),
                                 'ArrivalTime': supaSerialize<DateTime>(arrivalTime),
-                                'SeatsNeeded': _model.seatsNeeded,
+                                'SeatsNeeded': _model.seatsNeeded.toString(),
+                                'number_of_parcels_req': _model.parcelsNeeded,
+                                'price_per_parcel_req': 0.0,
                                 'RequestedBy': currentUserUid,
                               });
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Requested Successfully')),
-                                );
-                                context.safePop();
-                              }
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Requested Successfully')),
+                              );
+                              context.safePop();
                             } catch (e) {
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Error: $e')),
-                                );
-                              }
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Error: $e')),
+                              );
                             }
                           },
                           text: 'Submit Request',

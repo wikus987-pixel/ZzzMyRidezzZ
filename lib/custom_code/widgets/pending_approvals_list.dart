@@ -1,45 +1,71 @@
 // Automatic FlutterFlow imports
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/custom_code/widgets/index.dart'; // Imports other custom widgets
-import '/custom_code/actions/index.dart'; // Imports custom actions
-import '/flutter_flow/custom_functions.dart'; // Imports custom functions
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/index.dart';
 import 'package:flutter/material.dart';
-// Begin custom widget code
-// DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
 class PendingApprovalsList extends StatefulWidget {
   const PendingApprovalsList({
     super.key,
     this.width,
     this.height,
+    this.verified = false,
   });
 
   final double? width;
   final double? height;
+  final bool verified;
 
   @override
   State<PendingApprovalsList> createState() => _PendingApprovalsListState();
 }
 
 class _PendingApprovalsListState extends State<PendingApprovalsList> {
+  final Map<int, bool> _processingItems = {};
+  Stream<List<VerifiedPaymentsRow>>? _approvalsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeStream();
+  }
+
+  void _initializeStream() {
+    Future.delayed(const Duration(milliseconds: 700), () {
+      if (!mounted) return;
+      setState(() {
+        _approvalsStream = SupaFlow.client
+            .from('verified_payments')
+            .stream(primaryKey: ['id'])
+            .eq('verified', widget.verified)
+            .map((rows) => rows.map((r) => VerifiedPaymentsRow(r)).toList());
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.width,
       height: widget.height,
       child: StreamBuilder<List<VerifiedPaymentsRow>>(
-        stream: SupaFlow.client
-            .from('verified_payments')
-            .stream(primaryKey: ['id'])
-            .eq('verified', false)
-            .map((rows) => rows.map((r) => VerifiedPaymentsRow(r)).toList()),
+        stream: _approvalsStream ?? const Stream.empty(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading data'));
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Connection lost', style: TextStyle(color: Colors.red)),
+                  TextButton(
+                    onPressed: () => _initializeStream(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
           }
-          if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+          if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(color: Color(0xFF4B39EF)),
             );
@@ -48,10 +74,12 @@ class _PendingApprovalsListState extends State<PendingApprovalsList> {
           final pendingPayments = snapshot.data ?? [];
 
           if (pendingPayments.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'No pending approvals left!',
-                style: TextStyle(color: Colors.grey, fontSize: 16),
+                widget.verified 
+                    ? 'No confirmed registrations found.' 
+                    : 'No pending registrations awaiting verification.',
+                style: const TextStyle(color: Colors.grey, fontSize: 16),
               ),
             );
           }
@@ -62,11 +90,11 @@ class _PendingApprovalsListState extends State<PendingApprovalsList> {
             itemBuilder: (context, index) {
               final payment = pendingPayments[index];
               final emailStr = payment.email ?? 'Unknown Email';
+              final bool isProcessing = _processingItems[payment.id] ?? false;
 
               return Container(
                 width: double.infinity,
-                margin:
-                    const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -81,54 +109,201 @@ class _PendingApprovalsListState extends State<PendingApprovalsList> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                FutureBuilder<List<UsersRow>>(
+                                  future: UsersTable().querySingleRow(
+                                    queryFn: (q) => q.eq('email', emailStr),
+                                  ),
+                                    builder: (context, userSnapshot) {
+                                    final user = (userSnapshot.data != null && userSnapshot.data!.isNotEmpty)
+                                        ? userSnapshot.data!.first
+                                        : null;
+                                    final displayName = (user != null && user.firstName != null)
+                                        ? '${user.firstName} ($emailStr)'
+                                        : emailStr;
+                                    return Text(
+                                      displayName,
+                                      style: const TextStyle(
+                                        color: Color(0xFF14181B),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  widget.verified ? 'Verified' : 'Awaiting verification',
+                                  style: TextStyle(
+                                    color: widget.verified ? const Color(0xFF249689) : const Color(0xFFE6A100),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (widget.verified)
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline, color: Colors.red),
+                              tooltip: 'Remove Record',
+                              onPressed: () async {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Remove Confirmation'),
+                                    content: Text('Are you sure you want to remove the record for $emailStr? This does NOT undo the payment.'),
+                                    actions: [
+                                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Remove', style: TextStyle(color: Colors.red))),
+                                    ],
+                                  ),
+                                );
+
+                                if (confirm == true) {
+                                  try {
+                                    await VerifiedPaymentsTable().delete(
+                                      matchingRows: (q) => q.eq('id', payment.id),
+                                    );
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Record removed')),
+                                    );
+                                  } catch (e) {
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Error removing record: $e')),
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                        ],
+                      ),
+                      if (!widget.verified) ...[
+                        const SizedBox(height: 16),
+                        const Divider(height: 1, thickness: 1, color: Color(0xFFF1F4F8)),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(
-                              emailStr,
-                              style: const TextStyle(
-                                fontFamily: 'Outfit',
-                                color: Color(0xFF14181B),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                            if (isProcessing)
+                              const Padding(
+                                padding: EdgeInsets.only(right: 12),
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              )
+                            else ...[
+                              ElevatedButton(
+                                onPressed: () async {
+                                  setState(() => _processingItems[payment.id] = true);
+                                  try {
+                                    await VerifiedPaymentsTable().update(
+                                      data: {'verified': true, 'status': 'verified'},
+                                      matchingRows: (q) => q.eq('id', payment.id),
+                                    );
+                                    if (payment.email != null) {
+                                      await UsersTable().update(
+                                        data: {'IsSignupPaid': true},
+                                        matchingRows: (q) => q.eq('email', payment.email!),
+                                      );
+                                    }
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Verified $emailStr successfully!')),
+                                    );
+                                  } catch (e) {
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Error: $e')),
+                                    );
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() => _processingItems.remove(payment.id));
+                                    }
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF249689),
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Confirm', style: TextStyle(color: Colors.white)),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              'Awaiting verification',
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                color: Color(0xFFE6A100),
-                                fontSize: 12,
+                              const SizedBox(width: 12),
+                              IconButton(
+                                icon: const Icon(Icons.credit_card, color: Color(0xFF4B39EF)),
+                                tooltip: 'Pay with Card',
+                                style: IconButton.styleFrom(
+                                  backgroundColor: const Color(0x1A4B39EF),
+                                ),
+                                onPressed: () {
+                                  context.pushNamed(
+                                    PaymentPageWidget.routeName,
+                                    queryParameters: {
+                                      'initialAmount': '45.00',
+                                      'initialEmail': emailStr,
+                                      'paymentDescription': 'Admin Card Payment for $emailStr',
+                                      'paymentType': 'registration',
+                                    }.withoutNulls,
+                                  );
+                                },
                               ),
-                            ),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                tooltip: 'Delete',
+                                style: IconButton.styleFrom(
+                                  backgroundColor: const Color(0x1AF44336),
+                                ),
+                                onPressed: () async {
+                                  final confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Delete Registration'),
+                                      content: Text('Are you sure you want to remove the verification request for $emailStr?'),
+                                      actions: [
+                                        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                                        TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Delete', style: TextStyle(color: Colors.red))),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirm == true) {
+                                    try {
+                                      await VerifiedPaymentsTable().delete(
+                                        matchingRows: (q) => q.eq('id', payment.id),
+                                      );
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Registration entry deleted')),
+                                      );
+                                    } catch (e) {
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Error deleting entry: $e')),
+                                      );
+                                    }
+                                  }
+                                },
+                              ),
+                            ],
                           ],
                         ),
-                      ),
-                      Switch(
-                        value: payment.verified,
-                        activeColor: const Color(0xFF4B39EF),
-                        onChanged: (bool value) async {
-                          try {
-                            await VerifiedPaymentsTable().update(
-                              data: {'verified': value, 'status': value ? 'verified' : 'pending'},
-                              matchingRows: (q) => q.eq('id', payment.id),
-                            );
-                            if (payment.email != null) {
-                              await UsersTable().update(
-                                data: {'IsSignupPaid': value},
-                                matchingRows: (q) => q.eq('email', payment.email!),
-                              );
-                            }
-                          } catch (e) {
-                             debugPrint('Error toggling verification: $e');
-                          }
-                        },
-                      ),
+                      ],
                     ],
                   ),
                 ),

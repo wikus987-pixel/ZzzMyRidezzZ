@@ -1,5 +1,4 @@
-import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
-import '/flutter_flow/flutter_flow_util.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 export 'database/database.dart';
 export 'supabase_queries.dart';
@@ -20,14 +19,11 @@ class SupaFlow {
   static Future initialize() async {
     await Supabase.initialize(
       url: _kSupabaseUrl,
-      anonKey: _kSupabaseAnonKey,
+      publishableKey: _kSupabaseAnonKey,
       headers: {
         'X-Client-Info': 'flutterflow',
       },
       debug: false,
-      authOptions: const FlutterAuthClientOptions(
-        authFlowType: AuthFlowType.pkce,
-      ),
     );
   }
 }

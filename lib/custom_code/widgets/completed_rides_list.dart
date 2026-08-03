@@ -1,14 +1,7 @@
 // Automatic FlutterFlow imports
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/custom_code/widgets/index.dart'; // Imports other custom widgets
-import '/custom_code/actions/index.dart'; // Imports custom actions
-import '/flutter_flow/custom_functions.dart'; // Imports custom functions
-import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
-// Begin custom widget code
-// DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
 class CompletedRidesList extends StatefulWidget {
   const CompletedRidesList({
@@ -25,22 +18,50 @@ class CompletedRidesList extends StatefulWidget {
 }
 
 class _CompletedRidesListState extends State<CompletedRidesList> {
+  Stream<List<RidesRow>>? _completedRidesStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeStream();
+  }
+
+  void _initializeStream() {
+    Future.delayed(const Duration(milliseconds: 1100), () {
+      if (!mounted) return;
+      setState(() {
+        _completedRidesStream = SupaFlow.client
+            .from('rides')
+            .stream(primaryKey: ['id'])
+            .eq('RideStatus', 'Completed')
+            .map((rows) => rows.map((r) => RidesRow(r)).toList());
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.width,
       height: widget.height,
       child: StreamBuilder<List<RidesRow>>(
-        stream: SupaFlow.client
-            .from('rides')
-            .stream(primaryKey: ['id'])
-            .eq('RideStatus', 'Completed')
-            .map((rows) => rows.map((r) => RidesRow(r)).toList()),
+        stream: _completedRidesStream ?? const Stream.empty(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading data'));
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Connection lost', style: TextStyle(color: Colors.red)),
+                  TextButton(
+                    onPressed: () => _initializeStream(),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(color: Color(0xFF4B39EF)),
             );
@@ -91,36 +112,85 @@ class _CompletedRidesListState extends State<CompletedRidesList> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            Text(
-                              'Driver: ${ride.createdBy}',
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 11,
+                            FutureBuilder<List<UsersRow>>(
+                              future: UsersTable().querySingleRow(
+                                queryFn: (q) => q.eq('uid', ride.createdBy ?? ''),
                               ),
+                              builder: (context, userSnapshot) {
+                                final user = (userSnapshot.data != null && userSnapshot.data!.isNotEmpty)
+                                    ? userSnapshot.data!.first
+                                    : null;
+                                return Text(
+                                  'Driver: ${user?.firstName ?? ride.createdBy ?? 'Unknown'}',
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 11,
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
                       ),
-                      FFButtonWidget(
-                        onPressed: () async {
-                          await RidesTable().update(
-                            data: {'RideStatus': 'Paid'},
-                            matchingRows: (q) => q.eq('id', ride.id),
-                          );
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Payout confirmed!')),
-                            );
-                          }
-                        },
-                        text: 'Pay Driver',
-                        options: FFButtonOptions(
-                          height: 32,
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          color: const Color(0xFF4B39EF),
-                          textStyle: const TextStyle(color: Colors.white, fontSize: 12),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FFButtonWidget(
+                            onPressed: () async {
+                              await RidesTable().update(
+                                data: {'RideStatus': 'Paid'},
+                                matchingRows: (q) => q.eq('id', ride.id),
+                              );
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Payout confirmed!')),
+                              );
+                            },
+                            text: 'Pay Driver',
+                            options: FFButtonOptions(
+                              height: 32,
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              color: const Color(0xFF4B39EF),
+                              textStyle: const TextStyle(color: Colors.white, fontSize: 12),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline, color: Colors.red),
+                            tooltip: 'Delete Ride Record',
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Delete Ride'),
+                                  content: const Text('Are you sure you want to permanently delete this completed ride record?'),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+                                    TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Delete', style: TextStyle(color: Colors.red))),
+                                  ],
+                                ),
+                              );
+
+                              if (confirm == true) {
+                                try {
+                                  await RidesTable().delete(
+                                    matchingRows: (q) => q.eq('id', ride.id),
+                                  );
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Ride record deleted')),
+                                  );
+                                } catch (e) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Error deleting ride: $e')),
+                                  );
+                                }
+                              }
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

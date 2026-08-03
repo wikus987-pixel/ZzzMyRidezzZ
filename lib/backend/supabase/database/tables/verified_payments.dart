@@ -10,7 +10,7 @@ class VerifiedPaymentsTable extends SupabaseTable<VerifiedPaymentsRow> {
 }
 
 class VerifiedPaymentsRow extends SupabaseDataRow {
-  VerifiedPaymentsRow(Map<String, dynamic> data) : super(data);
+  VerifiedPaymentsRow(super.data);
 
   @override
   SupabaseTable get table => VerifiedPaymentsTable();
@@ -26,4 +26,13 @@ class VerifiedPaymentsRow extends SupabaseDataRow {
 
   bool get verified => getField<bool>('verified') ?? false;
   set verified(bool value) => setField<bool>('verified', value);
+
+  String? get status => getField<String>('status');
+  set status(String? value) => setField<String>('status', value);
+
+  String? get paypalOrderId => getField<String>('paypal_order_id');
+  set paypalOrderId(String? value) => setField<String>('paypal_order_id', value);
+
+  String? get paypalCaptureId => getField<String>('paypal_capture_id');
+  set paypalCaptureId(String? value) => setField<String>('paypal_capture_id', value);
 }

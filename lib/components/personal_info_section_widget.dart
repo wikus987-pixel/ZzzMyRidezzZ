@@ -1,8 +1,8 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/supabase/supabase.dart';
-import '/components/text_field_widget.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/auth/supabase_auth/auth_util.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/components/text_field_widget.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'personal_info_section_model.dart';
@@ -35,11 +35,26 @@ class PersonalInfoSectionWidget extends StatefulWidget {
 
 class _PersonalInfoSectionWidgetState extends State<PersonalInfoSectionWidget> {
   late PersonalInfoSectionModel _model;
+  Stream<List<UsersRow>>? _userStream;
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => PersonalInfoSectionModel());
+    _initializeStream();
+  }
+
+  void _initializeStream() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (!mounted) return;
+      setState(() {
+        _userStream = SupaFlow.client
+            .from('users')
+            .stream(primaryKey: ['id'])
+            .eq('uid', currentUserUid)
+            .map((rows) => rows.map((r) => UsersRow(r)).toList());
+      });
+    });
   }
 
   @override
@@ -51,16 +66,23 @@ class _PersonalInfoSectionWidgetState extends State<PersonalInfoSectionWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<UsersRow>>(
-      stream: SupaFlow.client
-          .from('users')
-          .stream(primaryKey: ['uid'])
-          .eq('uid', currentUserUid)
-          .map((rows) => rows.map((r) => UsersRow(r)).toList()),
+      stream: _userStream ?? const Stream.empty(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Center(child: Text('Error loading profile'));
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Profile connection lost'),
+                TextButton(
+                  onPressed: () => _initializeStream(),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          );
         }
-        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+        if (!snapshot.hasData) {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(20.0),

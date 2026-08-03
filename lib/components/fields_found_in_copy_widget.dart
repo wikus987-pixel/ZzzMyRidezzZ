@@ -1,12 +1,9 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/auth/supabase_auth/auth_util.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'fields_found_in_copy_model.dart';
 export 'fields_found_in_copy_model.dart';
 
@@ -22,10 +19,10 @@ class FieldsFoundInCopyWidget extends StatefulWidget {
     required this.datecreated,
     required this.vehicleregistration,
     this.ridescompleted,
-  })  : this.fullName = fullName ?? '',
-        this.email = email ?? '',
-        this.phoneNumber = phoneNumber ?? '',
-        this.surname = surname ?? '';
+  })  : fullName = fullName ?? '',
+        email = email ?? '',
+        phoneNumber = phoneNumber ?? '',
+        surname = surname ?? '';
 
   final String fullName;
   final String email;
@@ -43,6 +40,7 @@ class FieldsFoundInCopyWidget extends StatefulWidget {
 
 class _FieldsFoundInCopyWidgetState extends State<FieldsFoundInCopyWidget> {
   late FieldsFoundInCopyModel _model;
+  Stream<List<UsersRow>>? _userStream;
 
   @override
   void setState(VoidCallback callback) {
@@ -54,8 +52,24 @@ class _FieldsFoundInCopyWidgetState extends State<FieldsFoundInCopyWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => FieldsFoundInCopyModel());
-
+    _initializeStream();
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+  }
+
+  void _initializeStream() {
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (!mounted) return;
+      setState(() {
+        _userStream = SupaFlow.client
+            .from("users")
+            .stream(primaryKey: ['id'])
+            .eqOrNull(
+              'uid',
+              currentUserUid,
+            )
+            .map((list) => list.map((item) => UsersRow(item)).toList());
+      });
+    });
   }
 
   @override
@@ -121,15 +135,22 @@ class _FieldsFoundInCopyWidgetState extends State<FieldsFoundInCopyWidget> {
                 ].divide(SizedBox(width: 8.0)),
               ),
               StreamBuilder<List<UsersRow>>(
-                stream: _model.columnSupabaseStream ??= SupaFlow.client
-                    .from("users")
-                    .stream(primaryKey: ['uid'])
-                    .eqOrNull(
-                      'uid',
-                      currentUserUid,
-                    )
-                    .map((list) => list.map((item) => UsersRow(item)).toList()),
+                stream: _userStream ?? const Stream.empty(),
                 builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('Profile info lost'),
+                          TextButton(
+                            onPressed: () => _initializeStream(),
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                   // Customize what your widget looks like when it's loading.
                   if (!snapshot.hasData) {
                     return Center(
@@ -395,7 +416,7 @@ class _FieldsFoundInCopyWidgetState extends State<FieldsFoundInCopyWidget> {
                                       ),
                                 ),
                                 Text(
-                                  widget!.email,
+                                  widget.email,
                                   style: FlutterFlowTheme.of(context)
                                       .bodyLarge
                                       .override(
@@ -467,7 +488,7 @@ class _FieldsFoundInCopyWidgetState extends State<FieldsFoundInCopyWidget> {
                                 ),
                                 Text(
                                   valueOrDefault<String>(
-                                    widget!.vehicleregistration,
+                                    widget.vehicleregistration,
                                     'Vehicle Registration',
                                   ),
                                   style: FlutterFlowTheme.of(context)
@@ -534,7 +555,7 @@ class _FieldsFoundInCopyWidgetState extends State<FieldsFoundInCopyWidget> {
                                   ),
                                   Text(
                                     valueOrDefault<String>(
-                                      widget!.idnumber,
+                                      widget.idnumber,
                                       'ID Number',
                                     ),
                                     style: FlutterFlowTheme.of(context)
@@ -612,7 +633,7 @@ class _FieldsFoundInCopyWidgetState extends State<FieldsFoundInCopyWidget> {
                                 ),
                                 Text(
                                   valueOrDefault<String>(
-                                    widget!.datecreated,
+                                    widget.datecreated,
                                     'Date Created',
                                   ),
                                   style: FlutterFlowTheme.of(context)
@@ -679,7 +700,7 @@ class _FieldsFoundInCopyWidgetState extends State<FieldsFoundInCopyWidget> {
                                   ),
                                   Text(
                                     valueOrDefault<String>(
-                                      widget!.ridescompleted.toString(),
+                                      widget.ridescompleted.toString(),
                                       '0',
                                     ),
                                     style: FlutterFlowTheme.of(context)

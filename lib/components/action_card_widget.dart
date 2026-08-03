@@ -1,10 +1,7 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'action_card_model.dart';
 export 'action_card_model.dart';
 
@@ -14,8 +11,8 @@ class ActionCardWidget extends StatefulWidget {
     Color? tone,
     this.icon,
     String? label,
-  })  : this.tone = tone ?? const Color(0x00000000),
-        this.label = label ?? 'View All Payments';
+  })  : tone = tone ?? const Color(0x00000000),
+        label = label ?? 'View All Payments';
 
   final Color tone;
   final Widget? icon;
@@ -63,47 +60,45 @@ class _ActionCardWidgetState extends State<ActionCardWidget> {
       ),
       child: Padding(
         padding: EdgeInsets.all(24.0),
-        child: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 48.0,
-                height: 48.0,
-                decoration: BoxDecoration(
-                  color: valueOrDefault<Color>(
-                    widget!.tone,
-                    FlutterFlowTheme.of(context).secondary,
-                  ),
-                  borderRadius: BorderRadius.circular(9999.0),
-                  shape: BoxShape.rectangle,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 48.0,
+              height: 48.0,
+              decoration: BoxDecoration(
+                color: valueOrDefault<Color>(
+                  widget.tone,
+                  FlutterFlowTheme.of(context).secondary,
                 ),
-                child: widget!.icon!,
+                borderRadius: BorderRadius.circular(9999.0),
+                shape: BoxShape.rectangle,
               ),
-              Text(
-                valueOrDefault<String>(
-                  widget!.label,
-                  'View All Payments',
-                ),
-                textAlign: TextAlign.center,
-                style: FlutterFlowTheme.of(context).labelLarge.override(
-                      font: GoogleFonts.inter(
-                        fontWeight: FontWeight.w600,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).labelLarge.fontStyle,
-                      ),
-                      color: FlutterFlowTheme.of(context).primaryText,
-                      letterSpacing: 0.0,
+              child: widget.icon!,
+            ),
+            Text(
+              valueOrDefault<String>(
+                widget.label,
+                'View All Payments',
+              ),
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).labelLarge.override(
+                    font: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       fontStyle:
                           FlutterFlowTheme.of(context).labelLarge.fontStyle,
-                      lineHeight: 1.4,
                     ),
-              ),
-            ].divide(SizedBox(height: 16.0)),
-          ),
+                    color: FlutterFlowTheme.of(context).primaryText,
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w600,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelLarge.fontStyle,
+                    lineHeight: 1.4,
+                  ),
+            ),
+          ].divide(SizedBox(height: 16.0)),
         ),
       ),
     );

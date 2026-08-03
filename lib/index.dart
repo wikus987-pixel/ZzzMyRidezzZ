@@ -13,7 +13,8 @@ export '/ride_requests/ride_requests_widget.dart' show RideRequestsWidget;
 export '/admin_page/admin_page_widget.dart' show AdminPageWidget;
 export '/create_rides_page/create_rides_page_widget.dart'
     show CreateRidesPageWidget;
-export '/mybooked_rides/mybooked_rides_widget.dart' show MybookedRidesWidget;
 export '/pages/my_created_rides/my_created_rides_widget.dart'
     show MyCreatedRidesWidget;
 export '/login_page2/login_page2_widget.dart' show LoginPage2Widget;
+export '/pages/payment_page/payment_page_widget.dart' show PaymentPageWidget;
+export '/pages/eft_details/eft_details_widget.dart' show EftDetailsWidget;

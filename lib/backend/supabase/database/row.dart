@@ -44,11 +44,11 @@ dynamic supaSerialize<T>(T? value) {
   }
 
   switch (T) {
-    case DateTime:
+    case == DateTime:
       return (value as DateTime).toIso8601String();
-    case PostgresTime:
+    case == PostgresTime:
       return (value as PostgresTime).toIso8601String();
-    case LatLng:
+    case == LatLng:
       final latLng = (value as LatLng);
       return {'lat': latLng.latitude, 'lng': latLng.longitude};
     default:
@@ -65,15 +65,15 @@ T? _supaDeserialize<T>(dynamic value) {
   }
 
   switch (T) {
-    case int:
+    case == int:
       return (value as num).round() as T?;
-    case double:
+    case == double:
       return (value as num).toDouble() as T?;
-    case DateTime:
+    case == DateTime:
       return DateTime.tryParse(value as String)?.toLocal() as T?;
-    case PostgresTime:
+    case == PostgresTime:
       return PostgresTime.tryParse(value as String) as T?;
-    case LatLng:
+    case == LatLng:
       final latLng = value is Map ? value : json.decode(value) as Map;
       final lat = latLng['lat'] ?? latLng['latitude'];
       final lng = latLng['lng'] ?? latLng['longitude'];

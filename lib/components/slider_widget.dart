@@ -1,10 +1,7 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'slider_model.dart';
 export 'slider_model.dart';
 
@@ -24,19 +21,19 @@ class SliderWidget extends StatefulWidget {
     String? variant,
     bool? disabled,
     bool? showTicks,
-  })  : this.label = label ?? 'Intensity Level',
-        this.labelPresent = labelPresent ?? true,
-        this.description = description ?? '',
-        this.descriptionPresent = descriptionPresent ?? false,
-        this.valueLabel = valueLabel ?? '',
-        this.valueLabelPresent = valueLabelPresent ?? false,
-        this.step = step ?? 0.0,
-        this.divisions = divisions ?? 0,
-        this.valuePercentage = valuePercentage ?? 0.0,
-        this.color = color ?? const Color(0x00000000),
-        this.variant = variant ?? 'Material',
-        this.disabled = disabled ?? false,
-        this.showTicks = showTicks ?? true;
+  })  : label = label ?? 'Intensity Level',
+        labelPresent = labelPresent ?? true,
+        description = description ?? '',
+        descriptionPresent = descriptionPresent ?? false,
+        valueLabel = valueLabel ?? '',
+        valueLabelPresent = valueLabelPresent ?? false,
+        step = step ?? 0.0,
+        divisions = divisions ?? 0,
+        valuePercentage = valuePercentage ?? 0.0,
+        color = color ?? const Color(0x00000000),
+        variant = variant ?? 'Material',
+        disabled = disabled ?? false,
+        showTicks = showTicks ?? true;
 
   final String label;
   final bool labelPresent;
@@ -85,178 +82,172 @@ class _SliderWidgetState extends State<SliderWidget> {
     return Opacity(
       opacity: valueOrDefault<double>(
         valueOrDefault<bool>(
-          widget!.disabled,
+          widget.disabled,
           false,
         )
             ? 0.55
             : 1.0,
         1.0,
       ),
-      child: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (valueOrDefault<bool>(
-                  widget!.labelPresent,
-                  true,
-                ))
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      valueOrDefault<String>(
-                        widget!.label,
-                        'Intensity Level',
-                      ),
-                      maxLines: 1,
-                      style: FlutterFlowTheme.of(context).labelLarge.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .labelLarge
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelLarge
-                                  .fontStyle,
-                            ),
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .labelLarge
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelLarge
-                                .fontStyle,
-                            lineHeight: 1.4,
-                          ),
-                      overflow: TextOverflow.ellipsis,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (valueOrDefault<bool>(
+                widget.labelPresent,
+                true,
+              ))
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    valueOrDefault<String>(
+                      widget.label,
+                      'Intensity Level',
                     ),
-                  ),
-                if (valueOrDefault<bool>(
-                  widget!.valueLabelPresent,
-                  false,
-                ))
-                  Text(
-                    widget!.valueLabel,
                     maxLines: 1,
-                    style: FlutterFlowTheme.of(context).labelMedium.override(
+                    style: FlutterFlowTheme.of(context).labelLarge.override(
                           font: GoogleFonts.inter(
                             fontWeight: FlutterFlowTheme.of(context)
-                                .labelMedium
+                                .labelLarge
                                 .fontWeight,
                             fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
+                                .labelLarge
                                 .fontStyle,
                           ),
-                          color: FlutterFlowTheme.of(context).secondaryText,
+                          color: FlutterFlowTheme.of(context).primaryText,
                           letterSpacing: 0.0,
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .labelLarge
+                              .fontWeight,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .labelLarge
+                              .fontStyle,
+                          lineHeight: 1.4,
+                        ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              if (valueOrDefault<bool>(
+                widget.valueLabelPresent,
+                false,
+              ))
+                Text(
+                  widget.valueLabel,
+                  maxLines: 1,
+                  style: FlutterFlowTheme.of(context).labelMedium.override(
+                        font: GoogleFonts.inter(
                           fontWeight: FlutterFlowTheme.of(context)
                               .labelMedium
                               .fontWeight,
                           fontStyle: FlutterFlowTheme.of(context)
                               .labelMedium
                               .fontStyle,
-                          lineHeight: 1.4,
                         ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-              ].divide(SizedBox(width: 16.0)),
-            ),
-            Container(
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(
-                    valueOrDefault<double>(
-                      valueOrDefault<String>(
-                                widget!.variant,
-                                'Material',
-                              ) ==
-                              'iOS'
-                          ? 0.0
-                          : 0.0,
-                      0.0,
-                    ),
-                    valueOrDefault<double>(
-                      valueOrDefault<String>(
-                                widget!.variant,
-                                'Material',
-                              ) ==
-                              'iOS'
-                          ? 0.0
-                          : 8.0,
-                      8.0,
-                    ),
-                    valueOrDefault<double>(
-                      valueOrDefault<String>(
-                                widget!.variant,
-                                'Material',
-                              ) ==
-                              'iOS'
-                          ? 0.0
-                          : 0.0,
-                      0.0,
-                    ),
-                    valueOrDefault<double>(
-                      valueOrDefault<String>(
-                                widget!.variant,
-                                'Material',
-                              ) ==
-                              'iOS'
-                          ? 0.0
-                          : 8.0,
-                      8.0,
-                    )),
-                child: Container(
-                  child: Slider(
-                    activeColor: valueOrDefault<Color>(
-                      widget!.color,
-                      FlutterFlowTheme.of(context).primary,
-                    ),
-                    inactiveColor: FlutterFlowTheme.of(context).alternate,
-                    min: 0.0,
-                    max: 100.0,
-                    value: _model.sliderValue ??= valueOrDefault<double>(
-                      widget!.valuePercentage,
-                      0.0,
-                    ),
-                    onChanged: (newValue) {
-                      newValue = double.parse(newValue.toStringAsFixed(2));
-                      safeSetState(() => _model.sliderValue = newValue);
-                    },
-                  ),
-                ),
-              ),
-            ),
-            if (valueOrDefault<bool>(
-              widget!.descriptionPresent,
-              false,
-            ))
-              Text(
-                widget!.description,
-                maxLines: 2,
-                style: FlutterFlowTheme.of(context).bodySmall.override(
-                      font: GoogleFonts.inter(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodySmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        letterSpacing: 0.0,
+                        fontWeight: FlutterFlowTheme.of(context)
+                            .labelMedium
+                            .fontWeight,
+                        fontStyle: FlutterFlowTheme.of(context)
+                            .labelMedium
+                            .fontStyle,
+                        lineHeight: 1.4,
                       ),
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                      letterSpacing: 0.0,
+                  overflow: TextOverflow.ellipsis,
+                ),
+            ].divide(const SizedBox(width: 16.0)),
+          ),
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(
+                valueOrDefault<double>(
+                  valueOrDefault<String>(
+                            widget.variant,
+                            'Material',
+                          ) ==
+                          'iOS'
+                      ? 0.0
+                      : 0.0,
+                  0.0,
+                ),
+                valueOrDefault<double>(
+                  valueOrDefault<String>(
+                            widget.variant,
+                            'Material',
+                          ) ==
+                          'iOS'
+                      ? 0.0
+                      : 8.0,
+                  8.0,
+                ),
+                valueOrDefault<double>(
+                  valueOrDefault<String>(
+                            widget.variant,
+                            'Material',
+                          ) ==
+                          'iOS'
+                      ? 0.0
+                      : 0.0,
+                  0.0,
+                ),
+                valueOrDefault<double>(
+                  valueOrDefault<String>(
+                            widget.variant,
+                            'Material',
+                          ) ==
+                          'iOS'
+                      ? 0.0
+                      : 8.0,
+                  8.0,
+                )),
+            child: Slider(
+              activeColor: valueOrDefault<Color>(
+                widget.color,
+                FlutterFlowTheme.of(context).primary,
+              ),
+              inactiveColor: FlutterFlowTheme.of(context).alternate,
+              min: 0.0,
+              max: 100.0,
+              value: _model.sliderValue ??= valueOrDefault<double>(
+                widget.valuePercentage,
+                0.0,
+              ),
+              onChanged: (newValue) {
+                newValue = double.parse(newValue.toStringAsFixed(2));
+                safeSetState(() => _model.sliderValue = newValue);
+              },
+            ),
+          ),
+          if (valueOrDefault<bool>(
+            widget.descriptionPresent,
+            false,
+          ))
+            Text(
+              widget.description,
+              maxLines: 2,
+              style: FlutterFlowTheme.of(context).bodySmall.override(
+                    font: GoogleFonts.inter(
                       fontWeight:
                           FlutterFlowTheme.of(context).bodySmall.fontWeight,
                       fontStyle:
                           FlutterFlowTheme.of(context).bodySmall.fontStyle,
-                      lineHeight: 1.4,
                     ),
-                overflow: TextOverflow.ellipsis,
-              ),
-          ].divide(SizedBox(height: 4.0)),
-        ),
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    letterSpacing: 0.0,
+                    fontWeight:
+                        FlutterFlowTheme.of(context).bodySmall.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                    lineHeight: 1.4,
+                  ),
+              overflow: TextOverflow.ellipsis,
+            ),
+        ].divide(const SizedBox(height: 4.0)),
       ),
     );
   }

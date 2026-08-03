@@ -1,11 +1,8 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:provider/provider.dart';
 import 'button5_model.dart';
 export 'button5_model.dart';
 
@@ -22,14 +19,14 @@ class Button5Widget extends StatefulWidget {
     bool? fullWidth,
     bool? loading,
     bool? disabled,
-  })  : this.iconPresent = iconPresent ?? false,
-        this.iconEndPresent = iconEndPresent ?? false,
-        this.content = content ?? 'SlotValue(\$button_label)',
-        this.variant = variant ?? 'primary',
-        this.size = size ?? 'large',
-        this.fullWidth = fullWidth ?? true,
-        this.loading = loading ?? false,
-        this.disabled = disabled ?? false;
+  })  : iconPresent = iconPresent ?? false,
+        iconEndPresent = iconEndPresent ?? false,
+        content = content ?? 'SlotValue(\$button_label)',
+        variant = variant ?? 'primary',
+        size = size ?? 'large',
+        fullWidth = fullWidth ?? true,
+        loading = loading ?? false,
+        disabled = disabled ?? false;
 
   final Widget? icon;
   final bool iconPresent;
@@ -75,7 +72,7 @@ class _Button5WidgetState extends State<Button5Widget> {
     return Opacity(
       opacity: valueOrDefault<double>(
         valueOrDefault<bool>(
-          widget!.disabled,
+          widget.disabled,
           false,
         )
             ? 0.55
@@ -87,25 +84,25 @@ class _Button5WidgetState extends State<Button5Widget> {
           color: valueOrDefault<Color>(
             () {
               if (valueOrDefault<String>(
-                    widget!.variant,
+                    widget.variant,
                     'primary',
                   ) ==
                   'secondary') {
                 return FlutterFlowTheme.of(context).secondary;
               } else if (valueOrDefault<String>(
-                    widget!.variant,
+                    widget.variant,
                     'primary',
                   ) ==
                   'outline') {
                 return Colors.transparent;
               } else if (valueOrDefault<String>(
-                    widget!.variant,
+                    widget.variant,
                     'primary',
                   ) ==
                   'ghost') {
                 return Colors.transparent;
               } else if (valueOrDefault<String>(
-                    widget!.variant,
+                    widget.variant,
                     'primary',
                   ) ==
                   'destructive') {
@@ -120,13 +117,13 @@ class _Button5WidgetState extends State<Button5Widget> {
             topLeft: Radius.circular(valueOrDefault<double>(
               () {
                 if (valueOrDefault<String>(
-                      widget!.size,
+                      widget.size,
                       'large',
                     ) ==
                     'small') {
                   return 8.0;
                 } else if (valueOrDefault<String>(
-                      widget!.size,
+                      widget.size,
                       'large',
                     ) ==
                     'large') {
@@ -140,13 +137,13 @@ class _Button5WidgetState extends State<Button5Widget> {
             topRight: Radius.circular(valueOrDefault<double>(
               () {
                 if (valueOrDefault<String>(
-                      widget!.size,
+                      widget.size,
                       'large',
                     ) ==
                     'small') {
                   return 8.0;
                 } else if (valueOrDefault<String>(
-                      widget!.size,
+                      widget.size,
                       'large',
                     ) ==
                     'large') {
@@ -160,13 +157,13 @@ class _Button5WidgetState extends State<Button5Widget> {
             bottomLeft: Radius.circular(valueOrDefault<double>(
               () {
                 if (valueOrDefault<String>(
-                      widget!.size,
+                      widget.size,
                       'large',
                     ) ==
                     'small') {
                   return 8.0;
                 } else if (valueOrDefault<String>(
-                      widget!.size,
+                      widget.size,
                       'large',
                     ) ==
                     'large') {
@@ -180,13 +177,13 @@ class _Button5WidgetState extends State<Button5Widget> {
             bottomRight: Radius.circular(valueOrDefault<double>(
               () {
                 if (valueOrDefault<String>(
-                      widget!.size,
+                      widget.size,
                       'large',
                     ) ==
                     'small') {
                   return 8.0;
                 } else if (valueOrDefault<String>(
-                      widget!.size,
+                      widget.size,
                       'large',
                     ) ==
                     'large') {
@@ -202,7 +199,7 @@ class _Button5WidgetState extends State<Button5Widget> {
           border: Border.all(
             color: valueOrDefault<Color>(
               valueOrDefault<String>(
-                        widget!.variant,
+                        widget.variant,
                         'primary',
                       ) ==
                       'outline'
@@ -212,7 +209,7 @@ class _Button5WidgetState extends State<Button5Widget> {
             ),
             width: valueOrDefault<double>(
               valueOrDefault<String>(
-                        widget!.variant,
+                        widget.variant,
                         'primary',
                       ) ==
                       'outline'
@@ -228,7 +225,7 @@ class _Button5WidgetState extends State<Button5Widget> {
             Opacity(
               opacity: valueOrDefault<double>(
                 valueOrDefault<bool>(
-                  widget!.loading,
+                  widget.loading,
                   false,
                 )
                     ? 0.0
@@ -240,13 +237,13 @@ class _Button5WidgetState extends State<Button5Widget> {
                     valueOrDefault<double>(
                       () {
                         if (valueOrDefault<String>(
-                              widget!.size,
+                              widget.size,
                               'large',
                             ) ==
                             'small') {
                           return 16.0;
                         } else if (valueOrDefault<String>(
-                              widget!.size,
+                              widget.size,
                               'large',
                             ) ==
                             'large') {
@@ -260,13 +257,13 @@ class _Button5WidgetState extends State<Button5Widget> {
                     valueOrDefault<double>(
                       () {
                         if (valueOrDefault<String>(
-                              widget!.size,
+                              widget.size,
                               'large',
                             ) ==
                             'small') {
                           return 4.0;
                         } else if (valueOrDefault<String>(
-                              widget!.size,
+                              widget.size,
                               'large',
                             ) ==
                             'large') {
@@ -280,13 +277,13 @@ class _Button5WidgetState extends State<Button5Widget> {
                     valueOrDefault<double>(
                       () {
                         if (valueOrDefault<String>(
-                              widget!.size,
+                              widget.size,
                               'large',
                             ) ==
                             'small') {
                           return 16.0;
                         } else if (valueOrDefault<String>(
-                              widget!.size,
+                              widget.size,
                               'large',
                             ) ==
                             'large') {
@@ -300,13 +297,13 @@ class _Button5WidgetState extends State<Button5Widget> {
                     valueOrDefault<double>(
                       () {
                         if (valueOrDefault<String>(
-                              widget!.size,
+                              widget.size,
                               'large',
                             ) ==
                             'small') {
                           return 4.0;
                         } else if (valueOrDefault<String>(
-                              widget!.size,
+                              widget.size,
                               'large',
                             ) ==
                             'large') {
@@ -323,7 +320,7 @@ class _Button5WidgetState extends State<Button5Widget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (valueOrDefault<bool>(
-                      widget!.iconPresent,
+                      widget.iconPresent,
                       false,
                     ))
                       Icon(
@@ -332,7 +329,7 @@ class _Button5WidgetState extends State<Button5Widget> {
                       ),
                     Text(
                       valueOrDefault<String>(
-                        widget!.content,
+                        widget.content,
                         'SlotValue(\$button_label)',
                       ),
                       maxLines: 1,
@@ -358,7 +355,7 @@ class _Button5WidgetState extends State<Button5Widget> {
                       overflow: TextOverflow.clip,
                     ),
                     if (valueOrDefault<bool>(
-                      widget!.iconEndPresent,
+                      widget.iconEndPresent,
                       false,
                     ))
                       Icon(
@@ -371,7 +368,7 @@ class _Button5WidgetState extends State<Button5Widget> {
             ),
             if (valueOrDefault<bool>(
               valueOrDefault<bool>(
-                widget!.loading,
+                widget.loading,
                 false,
               )
                   ? true

@@ -1,14 +1,10 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/supabase/supabase.dart';
-import '/components/button5_widget.dart';
-import '/components/text_field2_widget.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/components/button5_widget.dart';
+import 'package:ride_share_supa/components/text_field2_widget.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'clean_compact_modern_model.dart';
 export 'clean_compact_modern_model.dart';
 
@@ -28,9 +24,9 @@ class CleanCompactModernWidget extends StatefulWidget {
     String? title,
     String? hint,
     String? buttonLabel,
-  })  : this.title = title ?? '',
-        this.hint = hint ?? '',
-        this.buttonLabel = buttonLabel ?? '';
+  })  : title = title ?? '',
+        hint = hint ?? '',
+        buttonLabel = buttonLabel ?? '';
 
   final String title;
   final String hint;
@@ -90,7 +86,7 @@ class _CleanCompactModernWidgetState extends State<CleanCompactModernWidget> {
                 children: [
                   Text(
                     valueOrDefault<String>(
-                      widget!.title,
+                      widget.title,
                       'Manual Verification',
                     ),
                     style: FlutterFlowTheme.of(context).titleLarge.override(
@@ -145,7 +141,7 @@ class _CleanCompactModernWidgetState extends State<CleanCompactModernWidget> {
                   ),
                   leadingIconPresent: true,
                   trailingIconPresent: false,
-                  hint: widget!.hint,
+                  hint: widget.hint,
                   value: '',
                   onChange: '',
                   onSubmit: '',
@@ -183,18 +179,18 @@ class _CleanCompactModernWidgetState extends State<CleanCompactModernWidget> {
                   }
 
                   final existing = await VerifiedPaymentsTable().queryRows(
-                    queryFn: (q) => q.eq('email', email),
+                    queryFn: (q) => q.eq('Email', email),
                   );
                   if (existing.isEmpty) {
                     await VerifiedPaymentsTable().insert({
-                      'email': email,
+                      'Email': email,
                       'status': 'verified',
                       'verified': true,
                     });
                   } else {
                     await VerifiedPaymentsTable().update(
                       data: {'status': 'verified', 'verified': true},
-                      matchingRows: (rows) => rows.eq('email', email),
+                      matchingRows: (rows) => rows.eq('Email', email),
                     );
                   }
                   await UsersTable().update(
@@ -202,21 +198,20 @@ class _CleanCompactModernWidgetState extends State<CleanCompactModernWidget> {
                     matchingRows: (rows) => rows.eq('email', email),
                   );
 
-                  if (mounted) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          '$email verified successfully!',
-                          style: TextStyle(
-                            color: FlutterFlowTheme.of(context).primaryText,
-                          ),
+                  if (!context.mounted) return;
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '$email verified successfully!',
+                        style: TextStyle(
+                          color: FlutterFlowTheme.of(context).primaryText,
                         ),
-                        duration: Duration(milliseconds: 4000),
-                        backgroundColor: FlutterFlowTheme.of(context).secondary,
                       ),
-                    );
-                  }
+                      duration: Duration(milliseconds: 4000),
+                      backgroundColor: FlutterFlowTheme.of(context).secondary,
+                    ),
+                  );
                 },
                 child: wrapWithModel(
                   model: _model.buttonModel,

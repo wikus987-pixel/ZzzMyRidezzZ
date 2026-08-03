@@ -1,11 +1,8 @@
 // Automatic FlutterFlow imports
-import '/backend/backend.dart';
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/custom_code/widgets/index.dart'; // Imports other custom widgets
-import '/custom_code/actions/index.dart'; // Imports custom actions
-import '/flutter_flow/custom_functions.dart'; // Imports custom functions
+import 'package:ride_share_supa/backend/backend.dart';
+// Imports other custom widgets
+// Imports custom actions
+// Imports custom functions
 import 'package:flutter/material.dart';
 // Begin custom widget code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
@@ -55,7 +52,7 @@ class _CustomPaymentCardState extends State<CustomPaymentCard> {
           onTap: () async {
             // 1. Write to verified_payments
             await VerifiedPaymentsTable().insert({
-              'email': email.toLowerCase().trim(),
+              'Email': email.toLowerCase().trim(),
               'status': 'verified',
             });
 
@@ -65,6 +62,7 @@ class _CustomPaymentCardState extends State<CustomPaymentCard> {
               matchingRows: (q) => q.eq('uid', widget.userUid),
             );
 
+            if (!context.mounted) return;
             // 3. Show native success alert
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -84,7 +82,7 @@ class _CustomPaymentCardState extends State<CustomPaymentCard> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),

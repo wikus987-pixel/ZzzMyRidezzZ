@@ -1,11 +1,10 @@
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_widgets.dart';
+import 'package:ride_share_supa/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'pay_now_fixed_amount_model.dart';
 export 'pay_now_fixed_amount_model.dart';
 
@@ -95,7 +94,7 @@ class _PayNowFixedAmountWidgetState extends State<PayNowFixedAmountWidget> {
                 'BookedBy': buttonPendingPaymentsRow?.bookedBy,
               });
               await launchURL(
-                  'https://paypal.me/WikusKriel85/${functions.getPayPalAmountInDollar(widget!.parameter1, widget!.parameter2?.toString())}');
+                  'https://paypal.me/WikusKriel85/${functions.getPayPalAmountInDollar(widget.parameter1, widget.parameter2?.toString())}');
             },
             text: 'Pay Now',
             options: FFButtonOptions(

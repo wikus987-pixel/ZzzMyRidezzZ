@@ -9,7 +9,7 @@ class RidesTable extends SupabaseTable<RidesRow> {
 }
 
 class RidesRow extends SupabaseDataRow {
-  RidesRow(Map<String, dynamic> data) : super(data);
+  RidesRow(super.data);
 
   @override
   SupabaseTable get table => RidesTable();
@@ -57,4 +57,11 @@ class RidesRow extends SupabaseDataRow {
 
   String? get bookedBy => getField<String>('BookedBy');
   set bookedBy(String? value) => setField<String>('BookedBy', value);
+
+  int? get numberOfParcels => getField<int>('number_of_parcels');
+  set numberOfParcels(int? value) => setField<int>('number_of_parcels', value);
+
+  double? get pricePerParcel => getField<double>('price_per_parcel');
+  set pricePerParcel(double? value) =>
+      setField<double>('price_per_parcel', value);
 }

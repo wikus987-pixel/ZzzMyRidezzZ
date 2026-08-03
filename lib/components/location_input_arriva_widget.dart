@@ -1,6 +1,5 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'location_input_arriva_model.dart';
@@ -12,8 +11,8 @@ class LocationInputArrivaWidget extends StatefulWidget {
     this.icon,
     String? label,
     String? hint,
-  })  : this.label = label ?? 'To',
-        this.hint = hint ?? 'Enter destination';
+  })  : label = label ?? 'Drop off Location',
+        hint = hint ?? 'Enter destination';
 
   final Widget? icon;
   final String label;
@@ -68,7 +67,7 @@ class _LocationInputArrivaWidgetState extends State<LocationInputArrivaWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Arrival:',
+                    'Drop off Location:',
                     style: FlutterFlowTheme.of(context).labelSmall.override(
                           font: GoogleFonts.inter(),
                           color: FlutterFlowTheme.of(context).secondaryText,

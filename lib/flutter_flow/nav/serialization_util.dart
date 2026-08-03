@@ -1,11 +1,13 @@
+// FlutterFlow generated serialization helpers.
+// ignore_for_file: avoid_print, constant_identifier_names, type_literal_in_constant_pattern
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:from_css_color/from_css_color.dart';
 
-import '/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
 
-import '../../flutter_flow/lat_lng.dart';
 import '../../flutter_flow/place.dart';
 import '../../flutter_flow/uploaded_file.dart';
 
@@ -80,8 +82,6 @@ String? serializeParam(
       case ParamType.SupabaseRow:
         return json.encode((param as SupabaseDataRow).data);
 
-      default:
-        data = null;
     }
     return data;
   } catch (e) {
@@ -207,8 +207,8 @@ dynamic deserializeParam<T>(
         return null;
       }
       return paramValues
-          .where((p) => p is String)
-          .map((p) => p as String)
+          .whereType<String>()
+          .map((p) => p)
           .map((p) => deserializeParam<T>(p, paramType, false,
               collectionNamePath: collectionNamePath))
           .where((p) => p != null)
@@ -255,10 +255,7 @@ dynamic deserializeParam<T>(
           default:
             return null;
         }
-
-      default:
-        return null;
-    }
+        }
   } catch (e) {
     print('Error deserializing parameter: $e');
     return null;

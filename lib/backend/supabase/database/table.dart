@@ -1,3 +1,7 @@
+// ignore_for_file: avoid_print
+
+import 'package:flutter/foundation.dart' show debugPrint;
+
 import 'database.dart';
 
 abstract class SupabaseTable<T extends SupabaseDataRow> {
@@ -23,7 +27,7 @@ abstract class SupabaseTable<T extends SupabaseDataRow> {
           .limit(1)
           .select()
           .maybeSingle()
-          .catchError((e) => print('Error querying row: $e'))
+          .catchError((e) => debugPrint('Error querying row: $e'))
           .then((r) => [if (r != null) createRow(r)]);
 
   Future<T> insert(Map<String, dynamic> data) => SupaFlow.client

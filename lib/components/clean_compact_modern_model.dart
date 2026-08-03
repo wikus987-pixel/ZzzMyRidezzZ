@@ -1,15 +1,9 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/supabase/supabase.dart';
-import '/components/button5_widget.dart';
-import '/components/text_field2_widget.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/components/button5_widget.dart';
+import 'package:ride_share_supa/components/text_field2_widget.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'clean_compact_modern_widget.dart' show CleanCompactModernWidget;
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class CleanCompactModernModel
     extends FlutterFlowModel<CleanCompactModernWidget> {

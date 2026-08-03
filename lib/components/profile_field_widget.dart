@@ -1,10 +1,7 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'profile_field_model.dart';
 export 'profile_field_model.dart';
 
@@ -14,8 +11,8 @@ class ProfileFieldWidget extends StatefulWidget {
     String? label,
     this.icon,
     String? value,
-  })  : this.label = label ?? 'Full Name',
-        this.value = value ?? 'Jordan Devereaux';
+  })  : label = label ?? 'Full Name',
+        value = value ?? 'Jordan Devereaux';
 
   final String label;
   final Widget? icon;
@@ -58,7 +55,7 @@ class _ProfileFieldWidgetState extends State<ProfileFieldWidget> {
       children: [
         Text(
           valueOrDefault<String>(
-            widget!.label,
+            widget.label,
             'Full Name',
           ),
           style: FlutterFlowTheme.of(context).labelSmall.override(
@@ -85,53 +82,46 @@ class _ProfileFieldWidgetState extends State<ProfileFieldWidget> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Container(
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  widget!.icon!,
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      valueOrDefault<String>(
-                        widget!.value,
-                        'Jordan Devereaux',
-                      ),
-                      style: FlutterFlowTheme.of(context).bodyLarge.override(
-                            font: GoogleFonts.inter(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyLarge
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyLarge
-                                  .fontStyle,
-                            ),
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyLarge
-                                .fontWeight,
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                widget.icon!,
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    valueOrDefault<String>(
+                      widget.value,
+                      'Jordan Devereaux',
+                    ),
+                    style: FlutterFlowTheme.of(context).bodyLarge.override(
+                          font: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
                             fontStyle: FlutterFlowTheme.of(context)
                                 .bodyLarge
                                 .fontStyle,
-                            lineHeight: 1.4,
                           ),
-                    ),
+                          color: FlutterFlowTheme.of(context).primaryText,
+                          letterSpacing: 0.0,
+                          fontWeight: FontWeight.w500,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                          lineHeight: 1.4,
+                        ),
                   ),
-                  Icon(
-                    Icons.edit_rounded,
-                    color: FlutterFlowTheme.of(context).primary,
-                    size: 18.0,
-                  ),
-                ].divide(SizedBox(width: 16.0)),
-              ),
+                ),
+                Icon(
+                  Icons.edit_rounded,
+                  color: FlutterFlowTheme.of(context).primary,
+                  size: 18.0,
+                ),
+              ].divide(const SizedBox(width: 16.0)),
             ),
           ),
         ),
-      ].divide(SizedBox(height: 4.0)),
+      ].divide(const SizedBox(height: 4.0)),
     );
   }
 }

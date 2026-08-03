@@ -417,28 +417,28 @@ class FFShadows {
   final FlutterFlowTheme theme;
   BoxShadow get xs => const BoxShadow(
       blurRadius: 1.0,
-      color: const Color(0x1A000000),
-      offset: const Offset(0.0, 1.0),
+      color: Color(0x1A000000),
+      offset: Offset(0.0, 1.0),
       spreadRadius: 0.0);
   BoxShadow get sm => const BoxShadow(
       blurRadius: 2.0,
-      color: const Color(0x1A000000),
-      offset: const Offset(0.0, 1.0),
+      color: Color(0x1A000000),
+      offset: Offset(0.0, 1.0),
       spreadRadius: 0.0);
   BoxShadow get md => const BoxShadow(
       blurRadius: 4.0,
-      color: const Color(0x1A000000),
-      offset: const Offset(0.0, 2.0),
+      color: Color(0x1A000000),
+      offset: Offset(0.0, 2.0),
       spreadRadius: 0.0);
   BoxShadow get lg => const BoxShadow(
       blurRadius: 8.0,
-      color: const Color(0x1A000000),
-      offset: const Offset(0.0, 4.0),
+      color: Color(0x1A000000),
+      offset: Offset(0.0, 4.0),
       spreadRadius: 0.0);
   BoxShadow get xl => const BoxShadow(
       blurRadius: 16.0,
-      color: const Color(0x1A000000),
-      offset: const Offset(0.0, 8.0),
+      color: Color(0x1A000000),
+      offset: Offset(0.0, 8.0),
       spreadRadius: 0.0);
 }
 

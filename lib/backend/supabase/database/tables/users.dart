@@ -9,10 +9,13 @@ class UsersTable extends SupabaseTable<UsersRow> {
 }
 
 class UsersRow extends SupabaseDataRow {
-  UsersRow(Map<String, dynamic> data) : super(data);
+  UsersRow(super.data);
 
   @override
   SupabaseTable get table => UsersTable();
+
+  int get id => getField<int>('id')!;
+  set id(int value) => setField<int>('id', value);
 
   String get uid => getField<String>('uid')!;
   set uid(String value) => setField<String>('uid', value);
@@ -83,4 +86,8 @@ class UsersRow extends SupabaseDataRow {
 
   double? get rating => getField<double>('Rating');
   set rating(double? value) => setField<double>('Rating', value);
+
+  bool? get deletionRequested => getField<bool>('deletion_requested');
+  set deletionRequested(bool? value) =>
+      setField<bool>('deletion_requested', value);
 }

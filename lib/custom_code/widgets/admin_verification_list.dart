@@ -1,11 +1,8 @@
 // Automatic FlutterFlow imports
-import '/backend/backend.dart';
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/custom_code/widgets/index.dart'; // Imports other custom widgets
-import '/custom_code/actions/index.dart'; // Imports custom actions
-import '/flutter_flow/custom_functions.dart'; // Imports custom functions
+import 'package:ride_share_supa/backend/backend.dart';
+// Imports other custom widgets
+// Imports custom actions
+// Imports custom functions
 import 'package:flutter/material.dart';
 // Begin custom widget code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
@@ -79,7 +76,7 @@ class _AdminVerificationListState extends State<AdminVerificationList> {
                         onPressed: () async {
                           // 1. Add to verified_payments
                           await VerifiedPaymentsTable().insert({
-                            'email': email.toLowerCase().trim(),
+                            'Email': email.toLowerCase().trim(),
                             'status': 'verified',
                           });
 
@@ -89,6 +86,7 @@ class _AdminVerificationListState extends State<AdminVerificationList> {
                             matchingRows: (q) => q.eq('uid', userUid),
                           );
 
+                          if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                                 content:

@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
 
 Stream<List<RidesRow>> streamAllRides() {
   return SupaFlow.client
@@ -17,7 +17,8 @@ Stream<List<RidesRow>> streamRideById(int rideId) {
 }
 
 Stream<List<RidesRow>> rideRowListStream(RidesRow? ride) {
-  return Stream.value(ride != null ? [ride] : <RidesRow>[]);
+  if (ride == null) return Stream.value(<RidesRow>[]);
+  return streamRideById(ride.id);
 }
 
 Future<UsersRow?> getUserByUid(String uid) async {
@@ -30,7 +31,7 @@ Future<UsersRow?> getUserByUid(String uid) async {
 Stream<List<UsersRow>> streamUserByUid(String uid) {
   return SupaFlow.client
       .from('users')
-      .stream(primaryKey: ['uid'])
+      .stream(primaryKey: ['id'])
       .eq('uid', uid)
       .map((rows) => rows.map((r) => UsersRow(r)).toList());
 }

@@ -1,11 +1,8 @@
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'approval_item_model.dart';
 export 'approval_item_model.dart';
 
@@ -15,9 +12,9 @@ class ApprovalItemWidget extends StatefulWidget {
     String? email,
     String? date,
     bool? isVerified,
-  })  : this.email = email ?? 'marcus.v@example.com',
-        this.date = date ?? '2 mins ago',
-        this.isVerified = isVerified ?? false;
+  })  : email = email ?? 'marcus.v@example.com',
+        date = date ?? '2 mins ago',
+        isVerified = isVerified ?? false;
 
   final String email;
   final String date;
@@ -72,6 +69,7 @@ class _ApprovalItemWidgetState extends State<ApprovalItemWidget> {
             ),
           );
         }
+        // ignore: unused_local_variable
         List<UsersRow> containerUsersRowList = snapshot.data!;
 
         return Container(
@@ -108,142 +106,132 @@ class _ApprovalItemWidgetState extends State<ApprovalItemWidget> {
                 List<PendingPaymentsRow>
                     containerPaddingPendingPaymentsRowList = snapshot.data!;
 
+                // ignore: unused_local_variable
                 final containerPaddingPendingPaymentsRow =
                     containerPaddingPendingPaymentsRowList.isNotEmpty
                         ? containerPaddingPendingPaymentsRowList.first
                         : null;
 
-                return Container(
-                  child: FutureBuilder<List<UsersRow>>(
-                    future: UsersTable().querySingleRow(
-                      queryFn: (q) => q,
-                    ),
-                    builder: (context, snapshot) {
-                      // Customize what your widget looks like when it's loading.
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: SizedBox(
-                            width: 50.0,
-                            height: 50.0,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                FlutterFlowTheme.of(context).primary,
-                              ),
+                return FutureBuilder<List<UsersRow>>(
+                  future: UsersTable().querySingleRow(
+                    queryFn: (q) => q,
+                  ),
+                  builder: (context, snapshot) {
+                    // Customize what your widget looks like when it's loading.
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: SizedBox(
+                          width: 50.0,
+                          height: 50.0,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              FlutterFlowTheme.of(context).primary,
                             ),
                           ),
-                        );
-                      }
-                      List<UsersRow> rowUsersRowList = snapshot.data!;
+                        ),
+                      );
+                    }
+                    List<UsersRow> rowUsersRowList = snapshot.data!;
 
-                      final rowUsersRow = rowUsersRowList.isNotEmpty
-                          ? rowUsersRowList.first
-                          : null;
+                    // ignore: unused_local_variable
+                    final rowUsersRow = rowUsersRowList.isNotEmpty
+                        ? rowUsersRowList.first
+                        : null;
 
-                      return Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40.0,
-                            height: 40.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              borderRadius: BorderRadius.circular(9999.0),
-                              shape: BoxShape.rectangle,
-                            ),
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: Icon(
-                              Icons.person_outline_rounded,
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              size: 24.0,
-                            ),
+                    return Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 40.0,
+                          height: 40.0,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context)
+                                .secondaryBackground,
+                            borderRadius: BorderRadius.circular(9999.0),
+                            shape: BoxShape.rectangle,
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: FutureBuilder<List<UsersRow>>(
-                              future: UsersTable().querySingleRow(
-                                queryFn: (q) => q,
-                              ),
-                              builder: (context, snapshot) {
-                                // Customize what your widget looks like when it's loading.
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: SizedBox(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          FlutterFlowTheme.of(context).primary,
-                                        ),
+                          alignment: AlignmentDirectional(0.0, 0.0),
+                          child: Icon(
+                            Icons.person_outline_rounded,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 24.0,
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: FutureBuilder<List<UsersRow>>(
+                            future: UsersTable().querySingleRow(
+                              queryFn: (q) => q,
+                            ),
+                            builder: (context, snapshot) {
+                              // Customize what your widget looks like when it's loading.
+                              if (!snapshot.hasData) {
+                                return Center(
+                                  child: SizedBox(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    child: CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation<Color>(
+                                        FlutterFlowTheme.of(context).primary,
                                       ),
                                     ),
-                                  );
-                                }
-                                List<UsersRow> columnUsersRowList =
-                                    snapshot.data!;
+                                  ),
+                                );
+                              }
+                              List<UsersRow> columnUsersRowList =
+                                  snapshot.data!;
 
-                                final columnUsersRow =
-                                    columnUsersRowList.isNotEmpty
-                                        ? columnUsersRowList.first
-                                        : null;
+                              // ignore: unused_local_variable
+                              final columnUsersRow =
+                                  columnUsersRowList.isNotEmpty
+                                      ? columnUsersRowList.first
+                                      : null;
 
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      valueOrDefault<String>(
-                                        widget!.email,
-                                        'marcus.v@example.com',
-                                      ),
-                                      maxLines: 1,
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .override(
-                                            font: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyLarge
-                                                      .fontStyle,
-                                            ),
-                                            color: FlutterFlowTheme.of(context)
-                                                .primaryText,
-                                            letterSpacing: 0.0,
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    valueOrDefault<String>(
+                                      widget.email,
+                                      'marcus.v@example.com',
+                                    ),
+                                    maxLines: 1,
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .override(
+                                          font: GoogleFonts.inter(
                                             fontWeight: FontWeight.w600,
                                             fontStyle:
                                                 FlutterFlowTheme.of(context)
                                                     .bodyLarge
                                                     .fontStyle,
-                                            lineHeight: 1.4,
                                           ),
-                                      overflow: TextOverflow.ellipsis,
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                          letterSpacing: 0.0,
+                                          fontWeight: FontWeight.w600,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyLarge
+                                                  .fontStyle,
+                                          lineHeight: 1.4,
+                                        ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    valueOrDefault<String>(
+                                      'Requested ${widget.date}',
+                                      'Requested 2 mins ago',
                                     ),
-                                    Text(
-                                      valueOrDefault<String>(
-                                        'Requested ${widget!.date}',
-                                        'Requested 2 mins ago',
-                                      ),
-                                      style: FlutterFlowTheme.of(context)
-                                          .labelSmall
-                                          .override(
-                                            font: GoogleFonts.inter(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelSmall
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelSmall
-                                                      .fontStyle,
-                                            ),
-                                            color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
-                                            letterSpacing: 0.0,
+                                    style: FlutterFlowTheme.of(context)
+                                        .labelSmall
+                                        .override(
+                                          font: GoogleFonts.inter(
                                             fontWeight:
                                                 FlutterFlowTheme.of(context)
                                                     .labelSmall
@@ -252,18 +240,29 @@ class _ApprovalItemWidgetState extends State<ApprovalItemWidget> {
                                                 FlutterFlowTheme.of(context)
                                                     .labelSmall
                                                     .fontStyle,
-                                            lineHeight: 1.4,
                                           ),
-                                    ),
-                                  ].divide(SizedBox(height: 4.0)),
-                                );
-                              },
-                            ),
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          letterSpacing: 0.0,
+                                          fontWeight:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelSmall
+                                                  .fontWeight,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelSmall
+                                                  .fontStyle,
+                                          lineHeight: 1.4,
+                                        ),
+                                  ),
+                                ].divide(SizedBox(height: 4.0)),
+                              );
+                            },
                           ),
-                        ].divide(SizedBox(width: 16.0)),
-                      );
-                    },
-                  ),
+                        ),
+                      ].divide(SizedBox(width: 16.0)),
+                    );
+                  },
                 );
               },
             ),

@@ -1,18 +1,9 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/backend.dart';
-import '/backend/supabase/supabase.dart';
-import '/components/datetime_picker_widget.dart';
-import '/components/location_input_arriva_widget.dart';
-import '/components/location_input_widget.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/components/datetime_picker_widget.dart';
+import 'package:ride_share_supa/components/location_input_arriva_widget.dart';
+import 'package:ride_share_supa/components/location_input_widget.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'create_rides_page_widget.dart' show CreateRidesPageWidget;
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class CreateRidesPageModel extends FlutterFlowModel<CreateRidesPageWidget> {
   ///  State fields for stateful widgets in this page.
@@ -40,6 +31,14 @@ class CreateRidesPageModel extends FlutterFlowModel<CreateRidesPageWidget> {
   FocusNode? textFieldFocusNode3;
   TextEditingController? textController3;
   String? Function(BuildContext, String?)? textController3Validator;
+  // State field(s) for TextField widget.
+  FocusNode? textFieldFocusNode4;
+  TextEditingController? textController4;
+  String? Function(BuildContext, String?)? textController4Validator;
+  // State field(s) for TextField widget.
+  FocusNode? textFieldFocusNode5;
+  TextEditingController? textController5;
+  String? Function(BuildContext, String?)? textController5Validator;
 
   @override
   void initState(BuildContext context) {
@@ -64,5 +63,11 @@ class CreateRidesPageModel extends FlutterFlowModel<CreateRidesPageWidget> {
 
     textFieldFocusNode3?.dispose();
     textController3?.dispose();
+
+    textFieldFocusNode4?.dispose();
+    textController4?.dispose();
+
+    textFieldFocusNode5?.dispose();
+    textController5?.dispose();
   }
 }

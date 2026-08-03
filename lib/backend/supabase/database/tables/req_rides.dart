@@ -9,7 +9,7 @@ class ReqRidesTable extends SupabaseTable<ReqRidesRow> {
 }
 
 class ReqRidesRow extends SupabaseDataRow {
-  ReqRidesRow(Map<String, dynamic> data) : super(data);
+  ReqRidesRow(super.data);
 
   @override
   SupabaseTable get table => ReqRidesTable();
@@ -37,4 +37,12 @@ class ReqRidesRow extends SupabaseDataRow {
 
   String? get requestedBy => getField<String>('RequestedBy');
   set requestedBy(String? value) => setField<String>('RequestedBy', value);
+
+  int? get numberOfParcelsReq => getField<int>('number_of_parcels_req');
+  set numberOfParcelsReq(int? value) =>
+      setField<int>('number_of_parcels_req', value);
+
+  double? get pricePerParcelReq => getField<double>('price_per_parcel_req');
+  set pricePerParcelReq(double? value) =>
+      setField<double>('price_per_parcel_req', value);
 }

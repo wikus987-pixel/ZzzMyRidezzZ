@@ -1,23 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import '/backend/backend.dart';
 
-import '/backend/supabase/supabase.dart';
 
-import '/auth/base_auth_user_provider.dart';
+import 'package:ride_share_supa/auth/base_auth_user_provider.dart';
 
-import '/main.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/lat_lng.dart';
-import '/flutter_flow/place.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import 'serialization_util.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 
-import '/index.dart';
+import 'package:ride_share_supa/index.dart';
 
 export 'package:go_router/go_router.dart';
 export 'serialization_util.dart';
@@ -85,18 +77,18 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
       errorBuilder: (context, state) =>
-          appStateNotifier.loggedIn ? HomePageWidget() : LoginPageWidget(),
+          appStateNotifier.loggedIn ? const HomePageWidget() : const LoginPageWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
           builder: (context, _) =>
-              appStateNotifier.loggedIn ? HomePageWidget() : LoginPageWidget(),
+              appStateNotifier.loggedIn ? const HomePageWidget() : const LoginPageWidget(),
           routes: [
             FFRoute(
               name: LoginPageWidget.routeName,
               path: LoginPageWidget.routePath,
-              builder: (context, params) => LoginPageWidget(),
+              builder: (context, params) => const LoginPageWidget(),
             ),
             FFRoute(
               name: Screen3Widget.routeName,
@@ -115,7 +107,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             FFRoute(
               name: HomePageWidget.routeName,
               path: HomePageWidget.routePath,
-              builder: (context, params) => HomePageWidget(),
+              builder: (context, params) => const HomePageWidget(),
             ),
             FFRoute(
               name: AvailableRidesScreenWidget.routeName,
@@ -150,12 +142,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             FFRoute(
               name: ReqRidesPageWidget.routeName,
               path: ReqRidesPageWidget.routePath,
-              builder: (context, params) => ReqRidesPageWidget(),
+              builder: (context, params) => const ReqRidesPageWidget(),
             ),
             FFRoute(
               name: RideRequestsWidget.routeName,
               path: RideRequestsWidget.routePath,
-              builder: (context, params) => RideRequestsWidget(),
+              builder: (context, params) => const RideRequestsWidget(),
             ),
             FFRoute(
               name: AdminPageWidget.routeName,
@@ -176,23 +168,59 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             FFRoute(
               name: CreateRidesPageWidget.routeName,
               path: CreateRidesPageWidget.routePath,
-              builder: (context, params) => CreateRidesPageWidget(),
-            ),
-            FFRoute(
-              name: MybookedRidesWidget.routeName,
-              path: MybookedRidesWidget.routePath,
-              builder: (context, params) => MybookedRidesWidget(),
+              builder: (context, params) => const CreateRidesPageWidget(),
             ),
             FFRoute(
               name: MyCreatedRidesWidget.routeName,
               path: MyCreatedRidesWidget.routePath,
               requireAuth: true,
-              builder: (context, params) => MyCreatedRidesWidget(),
+              builder: (context, params) => MyCreatedRidesWidget(
+                initialTab: params.getParam(
+                  'initialTab',
+                  ParamType.int,
+                ),
+              ),
+            ),
+            FFRoute(
+              name: EftDetailsWidget.routeName,
+              path: EftDetailsWidget.routePath,
+              builder: (context, params) => const EftDetailsWidget(),
             ),
             FFRoute(
               name: LoginPage2Widget.routeName,
               path: LoginPage2Widget.routePath,
-              builder: (context, params) => LoginPage2Widget(),
+              builder: (context, params) => const LoginPage2Widget(),
+            ),
+            FFRoute(
+              name: PaymentPageWidget.routeName,
+              path: PaymentPageWidget.routePath,
+              requireAuth: false,
+              builder: (context, params) => PaymentPageWidget(
+                initialAmount: params.getParam(
+                  'initialAmount',
+                  ParamType.double,
+                ),
+                initialEmail: params.getParam(
+                  'initialEmail',
+                  ParamType.String,
+                ),
+                paymentDescription: params.getParam(
+                  'paymentDescription',
+                  ParamType.String,
+                ),
+                paymentType: params.getParam(
+                  'paymentType',
+                  ParamType.String,
+                ),
+                rideId: params.getParam(
+                  'rideId',
+                  ParamType.int,
+                ),
+                seats: params.getParam(
+                  'seats',
+                  ParamType.int,
+                ),
+              ),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ),

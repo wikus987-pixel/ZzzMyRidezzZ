@@ -1,12 +1,12 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/supabase/supabase.dart';
-import '/components/datetime_picker_widget.dart';
-import '/components/location_input_arriva_widget.dart';
-import '/components/location_input_widget.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:ride_share_supa/auth/supabase_auth/auth_util.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/components/datetime_picker_widget.dart';
+import 'package:ride_share_supa/components/location_input_arriva_widget.dart';
+import 'package:ride_share_supa/components/location_input_widget.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_icon_button.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'create_rides_page_model.dart';
@@ -38,8 +38,14 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
     _model.textController2 ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
 
-    _model.textController3 ??= TextEditingController(text: '1');
+    _model.textController3 ??= TextEditingController(text: '0');
     _model.textFieldFocusNode3 ??= FocusNode();
+
+    _model.textController4 ??= TextEditingController();
+    _model.textFieldFocusNode4 ??= FocusNode();
+
+    _model.textController5 ??= TextEditingController(text: '0');
+    _model.textFieldFocusNode5 ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
@@ -59,14 +65,14 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
       firstDate: now.subtract(const Duration(days: 1)),
       lastDate: now.add(const Duration(days: 365)),
     );
-    if (date == null) {
+    if (date == null || !mounted) {
       return null;
     }
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(base),
     );
-    if (time == null) {
+    if (time == null || !mounted) {
       return null;
     }
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
@@ -127,7 +133,7 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
                     model: _model.locationInputModel,
                     updateCallback: () => safeSetState(() {}),
                     child: const LocationInputWidget(
-                      label: 'From',
+                      label: 'Pickup Location',
                       hint: 'Enter pickup location',
                     ),
                   ),
@@ -135,7 +141,10 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
                   wrapWithModel(
                     model: _model.locationInputArrivaModel,
                     updateCallback: () => safeSetState(() {}),
-                    child: const LocationInputArrivaWidget(),
+                    child: const LocationInputArrivaWidget(
+                      label: 'Drop off Location',
+                      hint: 'Enter destination',
+                    ),
                   ),
                   const SizedBox(height: 24.0),
                   Row(
@@ -217,6 +226,95 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
                       ),
                       const SizedBox(width: 16.0),
                       Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Number of seats being offered:',
+                              style: FlutterFlowTheme.of(context).labelSmall.override(
+                                    font: GoogleFonts.inter(),
+                                    color: FlutterFlowTheme.of(context).secondaryText,
+                                    fontSize: 10,
+                                  ),
+                            ),
+                            const SizedBox(height: 4),
+                            Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context).secondaryBackground,
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(color: FlutterFlowTheme.of(context).alternate),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.remove_circle_outline),
+                                    onPressed: () {
+                                      int current = int.tryParse(_model.textController3.text) ?? 0;
+                                      if (current > 0) {
+                                        setState(() => _model.textController3.text = (current - 1).toString());
+                                      }
+                                    },
+                                  ),
+                                  Text(
+                                    _model.textController3.text.isEmpty ? '0' : _model.textController3.text,
+                                    style: FlutterFlowTheme.of(context).bodyLarge.override(
+                                      font: GoogleFonts.inter(),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.add_circle_outline),
+                                    onPressed: () {
+                                      int current = int.tryParse(_model.textController3.text) ?? 0;
+                                      setState(() => _model.textController3.text = (current + 1).toString());
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Text(
+                    'Parcel Details',
+                    style: FlutterFlowTheme.of(context).titleMedium.override(
+                          font: GoogleFonts.interTight(
+                              fontWeight: FontWeight.w600),
+                        ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _model.textController4,
+                          focusNode: _model.textFieldFocusNode4,
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true),
+                          decoration: InputDecoration(
+                            labelText: 'Price Per Parcel (R)',
+                            labelStyle: FlutterFlowTheme.of(context).labelMedium,
+                            hintText: 'e.g. 20.00',
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).alternate),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).primary),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
                         child: Container(
                           height: 60,
                           decoration: BoxDecoration(
@@ -230,14 +328,14 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
                               IconButton(
                                 icon: const Icon(Icons.remove_circle_outline),
                                 onPressed: () {
-                                  int current = int.tryParse(_model.textController3.text) ?? 1;
-                                  if (current > 1) {
-                                    setState(() => _model.textController3.text = (current - 1).toString());
+                                  int current = int.tryParse(_model.textController5.text) ?? 0;
+                                  if (current > 0) {
+                                    setState(() => _model.textController5.text = (current - 1).toString());
                                   }
                                 },
                               ),
                               Text(
-                                _model.textController3.text.isEmpty ? '1' : _model.textController3.text,
+                                _model.textController5.text.isEmpty ? '0' : _model.textController5.text,
                                 style: FlutterFlowTheme.of(context).bodyLarge.override(
                                   font: GoogleFonts.inter(),
                                   fontWeight: FontWeight.bold,
@@ -246,8 +344,8 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
                               IconButton(
                                 icon: const Icon(Icons.add_circle_outline),
                                 onPressed: () {
-                                  int current = int.tryParse(_model.textController3.text) ?? 1;
-                                  setState(() => _model.textController3.text = (current + 1).toString());
+                                  int current = int.tryParse(_model.textController5.text) ?? 0;
+                                  setState(() => _model.textController5.text = (current + 1).toString());
                                 },
                               ),
                             ],
@@ -303,23 +401,25 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
                               int.tryParse(_model.textController3.text) ?? 0,
                           'price_per_seat':
                               double.tryParse(_model.textController2.text) ?? 0.0,
+                          'number_of_parcels':
+                              int.tryParse(_model.textController5.text) ?? 0,
+                          'price_per_parcel':
+                              double.tryParse(_model.textController4.text) ?? 0.0,
                           'additional_comments': _model.textController1.text.trim(),
                           'driver_reference': currentUserUid,
                           'CreatedBy': currentUserUid,
                           'RideStatus': 'Open',
                         });
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Ride Created Successfully')),
-                          );
-                          context.safePop();
-                        }
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Ride Created Successfully')),
+                        );
+                        context.safePop();
                       } catch (e) {
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error creating ride: $e')),
-                          );
-                        }
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error creating ride: $e')),
+                        );
                       }
                     },
                     text: 'Create Ride',

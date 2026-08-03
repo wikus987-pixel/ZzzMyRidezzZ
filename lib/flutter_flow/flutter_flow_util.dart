@@ -1,3 +1,6 @@
+// FlutterFlow generated file.
+// ignore_for_file: type_literal_in_constant_pattern
+
 import 'dart:io';
 
 
@@ -14,7 +17,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
 
-import 'lat_lng.dart';
 
 export 'keep_alive_wrapper.dart';
 export 'lat_lng.dart';
@@ -287,7 +289,7 @@ void showSnackbar(
           if (loading)
             Padding(
               padding: EdgeInsetsDirectional.only(end: 10.0),
-              child: Container(
+              child: SizedBox(
                 height: 20,
                 width: 20,
                 child: const CircularProgressIndicator(

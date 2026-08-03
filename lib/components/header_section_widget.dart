@@ -1,10 +1,7 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'header_section_model.dart';
 export 'header_section_model.dart';
 
@@ -13,8 +10,8 @@ class HeaderSectionWidget extends StatefulWidget {
     super.key,
     String? title,
     String? subtitle,
-  })  : this.title = title ?? 'Verify Payment',
-        this.subtitle = subtitle ??
+  })  : title = title ?? 'Verify Payment',
+        subtitle = subtitle ??
             'Manually authorize user access after proof of payment receipt.';
 
   final String title;
@@ -57,7 +54,7 @@ class _HeaderSectionWidgetState extends State<HeaderSectionWidget> {
       children: [
         Text(
           valueOrDefault<String>(
-            widget!.title,
+            widget.title,
             'Verify Payment',
           ),
           style: FlutterFlowTheme.of(context).headlineMedium.override(
@@ -76,7 +73,7 @@ class _HeaderSectionWidgetState extends State<HeaderSectionWidget> {
         ),
         Text(
           valueOrDefault<String>(
-            widget!.subtitle,
+            widget.subtitle,
             'Manually authorize user access after proof of payment receipt.',
           ),
           style: FlutterFlowTheme.of(context).bodyMedium.override(

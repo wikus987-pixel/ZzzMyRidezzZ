@@ -10,7 +10,7 @@ class PendingPaymentsTable extends SupabaseTable<PendingPaymentsRow> {
 }
 
 class PendingPaymentsRow extends SupabaseDataRow {
-  PendingPaymentsRow(Map<String, dynamic> data) : super(data);
+  PendingPaymentsRow(super.data);
 
   @override
   SupabaseTable get table => PendingPaymentsTable();

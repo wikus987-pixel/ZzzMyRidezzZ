@@ -1,11 +1,9 @@
-import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:ride_share_supa/backend/backend.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'ride_item_model.dart';
 export 'ride_item_model.dart';
 
@@ -21,13 +19,13 @@ class RideItemWidget extends StatefulWidget {
     required this.departuretime,
     String? numberofseatsavailable,
     String? priceperseat,
-  })  : this.destination = destination ?? 'Downtown Office',
-        this.time = time ?? 'Today, 05:30 PM',
-        this.statusColor = statusColor ?? const Color(0x00000000),
-        this.status = status ?? 'Active',
-        this.departure = departure ?? 'Bloemfontein',
-        this.numberofseatsavailable = numberofseatsavailable ?? '3',
-        this.priceperseat = priceperseat ?? 'R200';
+  })  : destination = destination ?? 'Downtown Office',
+        time = time ?? 'Today, 05:30 PM',
+        statusColor = statusColor ?? const Color(0x00000000),
+        status = status ?? 'Active',
+        departure = departure ?? 'Bloemfontein',
+        numberofseatsavailable = numberofseatsavailable ?? '3',
+        priceperseat = priceperseat ?? 'R200';
 
   final String destination;
   final String time;
@@ -85,10 +83,9 @@ class _RideItemWidgetState extends State<RideItemWidget> {
             ),
           );
         }
-        List<RidesRow> containerRidesRowList = snapshot.data!;
 
         return AnimatedContainer(
-          duration: Duration(milliseconds: 1480),
+          duration: const Duration(milliseconds: 1480),
           curve: Curves.bounceOut,
           decoration: BoxDecoration(
             color: FlutterFlowTheme.of(context).alternate,
@@ -100,7 +97,7 @@ class _RideItemWidgetState extends State<RideItemWidget> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -108,13 +105,13 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                     FlutterFlowTheme.of(context).primary,
                     FlutterFlowTheme.of(context).secondary
                   ],
-                  stops: [0.0, 1.0],
-                  begin: AlignmentDirectional(0.0, -1.0),
-                  end: AlignmentDirectional(0, 1.0),
+                  stops: const [0.0, 1.0],
+                  begin: const AlignmentDirectional(0.0, -1.0),
+                  end: const AlignmentDirectional(0, 1.0),
                 ),
                 borderRadius: BorderRadius.circular(22.0),
                 border: Border.all(
-                  color: Color(0xFF010094),
+                  color: const Color(0xFF010094),
                   width: 5.0,
                 ),
               ),
@@ -135,14 +132,10 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                       ),
                     );
                   }
-                  List<RidesRow> columnRidesRowList = snapshot.data!;
                   // Return an empty Container when the item does not exist.
                   if (snapshot.data!.isEmpty) {
                     return Container();
                   }
-                  final columnRidesRow = columnRidesRowList.isNotEmpty
-                      ? columnRidesRowList.first
-                      : null;
 
                   return ScrollConfiguration(
                     behavior: ScrollConfiguration.of(context).copyWith(
@@ -176,10 +169,10 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
                                             0.0, 10.0, 0.0, 0.0),
                                         child: Text(
-                                          widget!.departure,
+                                          widget.departure,
                                           style: FlutterFlowTheme.of(context)
                                               .titleMedium
                                               .override(
@@ -213,7 +206,7 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                       ),
                                       Text(
                                         dateTimeFormat("d MMMM y - HH:mm",
-                                            widget!.departuretime),
+                                            widget.departuretime),
                                         maxLines: 1,
                                         style: FlutterFlowTheme.of(context)
                                             .bodySmall
@@ -228,7 +221,7 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                                         .bodySmall
                                                         .fontStyle,
                                               ),
-                                              color: Color(0xFF030B5A),
+                                              color: const Color(0xFF030B5A),
                                               letterSpacing: 0.0,
                                               fontWeight:
                                                   FlutterFlowTheme.of(context)
@@ -242,10 +235,10 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                             ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                    ].divide(SizedBox(height: 4.0)),
+                                    ].divide(const SizedBox(height: 4.0)),
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   width: 40.0,
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -254,7 +247,7 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
                                             0.0, 20.0, 0.0, 0.0),
                                         child: Icon(
                                           Icons.east_rounded,
@@ -275,10 +268,10 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
                                             0.0, 10.0, 0.0, 0.0),
                                         child: Text(
-                                          widget!.destination,
+                                          widget.destination,
                                           textAlign: TextAlign.end,
                                           style: FlutterFlowTheme.of(context)
                                               .titleMedium
@@ -312,7 +305,7 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                         ),
                                       ),
                                       Text(
-                                        widget!.time,
+                                        widget.time,
                                         textAlign: TextAlign.end,
                                         maxLines: 1,
                                         style: FlutterFlowTheme.of(context)
@@ -328,7 +321,7 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                                         .bodySmall
                                                         .fontStyle,
                                               ),
-                                              color: Color(0xFF030B5A),
+                                              color: const Color(0xFF030B5A),
                                               letterSpacing: 0.0,
                                               fontWeight:
                                                   FlutterFlowTheme.of(context)
@@ -342,13 +335,13 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                             ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                    ].divide(SizedBox(height: 4.0)),
+                                    ].divide(const SizedBox(height: 4.0)),
                                   ),
                                 ),
-                              ].divide(SizedBox(width: 16.0)),
+                              ].divide(const SizedBox(width: 16.0)),
                             ),
                             Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.rectangle,
                               ),
                               child: Column(
@@ -364,202 +357,186 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(
                                         8.0, 0.0, 8.0, 0.0),
-                                    child: Container(
-                                      child: Align(
-                                        alignment:
-                                            AlignmentDirectional(0.0, 0.0),
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 0.0, 10.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.event_seat_rounded,
-                                                    color: FlutterFlowTheme.of(
+                                    child: Align(
+                                      alignment:
+                                          const AlignmentDirectional(0.0, 0.0),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsetsDirectional.fromSTEB(
+                                                0.0, 0.0, 0.0, 10.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.event_seat_rounded,
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryText,
+                                                  size: 16.0,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                          .fromSTEB(0.0, 20.0,
+                                                              0.0, 0.0),
+                                                  child: Text(
+                                                    valueOrDefault<String>(
+                                                      '${widget.numberofseatsavailable} seats left',
+                                                      ' seats left',
+                                                    ),
+                                                    style: FlutterFlowTheme.of(
                                                             context)
-                                                        .secondaryText,
-                                                    size: 16.0,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .fromSTEB(0.0, 20.0,
-                                                                0.0, 0.0),
-                                                    child: Text(
-                                                      valueOrDefault<String>(
-                                                        '${widget!.numberofseatsavailable} seats left',
-                                                        ' seats left',
-                                                      ),
-                                                      style:
-                                                          FlutterFlowTheme.of(
+                                                        .labelSmall
+                                                        .override(
+                                                          font: GoogleFonts
+                                                              .inter(
+                                                            fontWeight: FlutterFlowTheme.of(
+                                                                    context)
+                                                                .labelSmall
+                                                                .fontWeight,
+                                                            fontStyle: FlutterFlowTheme.of(
+                                                                    context)
+                                                                .labelSmall
+                                                                .fontStyle,
+                                                          ),
+                                                          color: FlutterFlowTheme.of(
+                                                                  context)
+                                                              .secondaryText,
+                                                          letterSpacing: 0.0,
+                                                          fontWeight: FlutterFlowTheme.of(
                                                                   context)
                                                               .labelSmall
-                                                              .override(
-                                                                font:
-                                                                    GoogleFonts
-                                                                        .inter(
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelSmall
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelSmall
-                                                                      .fontStyle,
-                                                                ),
-                                                                color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .secondaryText,
-                                                                letterSpacing:
-                                                                    0.0,
-                                                                fontWeight: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelSmall
-                                                                    .fontWeight,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelSmall
-                                                                    .fontStyle,
-                                                                lineHeight: 1.4,
-                                                              ),
-                                                    ),
+                                                              .fontWeight,
+                                                          fontStyle: FlutterFlowTheme.of(
+                                                                  context)
+                                                              .labelSmall
+                                                              .fontStyle,
+                                                          lineHeight: 1.4,
+                                                        ),
                                                   ),
-                                                ].divide(SizedBox(width: 4.0)),
+                                                ),
+                                              ].divide(const SizedBox(width: 4.0)),
+                                            ),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                                shape: BoxShape.rectangle,
                                               ),
-                                              Container(
+                                              child: Padding(
+                                                padding: const EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        4.0, 8.0, 4.0, 8.0),
+                                                child: Padding(
+                                                  padding: const EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          0.0,
+                                                          10.0,
+                                                          0.0,
+                                                          0.0),
+                                                  child: Text(
+                                                    '',
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .titleSmall
+                                                        .override(
+                                                          font: GoogleFonts
+                                                              .interTight(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold,
+                                                            fontStyle: FlutterFlowTheme.of(
+                                                                    context)
+                                                                .titleSmall
+                                                                .fontStyle,
+                                                          ),
+                                                          color: FlutterFlowTheme.of(
+                                                                  context)
+                                                              .primary,
+                                                          letterSpacing: 0.0,
+                                                          fontWeight:
+                                                              FontWeight
+                                                                  .bold,
+                                                          fontStyle: FlutterFlowTheme.of(
+                                                                  context)
+                                                              .titleSmall
+                                                              .fontStyle,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsetsDirectional
+                                                  .fromSTEB(
+                                                      0.0, 15.0, 0.0, 0.0),
+                                              child: Container(
                                                 decoration: BoxDecoration(
+                                                  color: valueOrDefault<Color>(
+                                                    widget.statusColor,
+                                                    FlutterFlowTheme.of(
+                                                            context)
+                                                        .success,
+                                                  ),
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          8.0),
+                                                          9999.0),
                                                   shape: BoxShape.rectangle,
                                                 ),
                                                 child: Padding(
-                                                  padding: EdgeInsetsDirectional
+                                                  padding: const EdgeInsetsDirectional
                                                       .fromSTEB(
-                                                          4.0, 8.0, 4.0, 8.0),
-                                                  child: Container(
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  10.0,
-                                                                  0.0,
-                                                                  0.0),
-                                                      child: Text(
-                                                        '',
-                                                        style:
-                                                            FlutterFlowTheme.of(
+                                                          16.0, 4.0, 16.0, 4.0),
+                                                  child: Text(
+                                                    valueOrDefault<String>(
+                                                      widget.status,
+                                                      'Active',
+                                                    ),
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .labelSmall
+                                                        .override(
+                                                          font: GoogleFonts
+                                                              .inter(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold,
+                                                            fontStyle: FlutterFlowTheme.of(
                                                                     context)
-                                                                .titleSmall
-                                                                .override(
-                                                                  font: GoogleFonts
-                                                                      .interTight(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .primary,
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .fontStyle,
-                                                                ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        0.0, 15.0, 0.0, 0.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        valueOrDefault<Color>(
-                                                      widget!.statusColor,
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .success,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            9999.0),
-                                                    shape: BoxShape.rectangle,
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .fromSTEB(16.0, 4.0,
-                                                                16.0, 4.0),
-                                                    child: Container(
-                                                      child: Text(
-                                                        valueOrDefault<String>(
-                                                          widget!.status,
-                                                          'Active',
+                                                                .labelSmall
+                                                                .fontStyle,
+                                                          ),
+                                                          color: const Color(
+                                                              0xFF020202),
+                                                          letterSpacing: 0.0,
+                                                          fontWeight:
+                                                              FontWeight
+                                                                  .bold,
+                                                          fontStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .labelSmall
+                                                                  .fontStyle,
+                                                          lineHeight: 1.4,
                                                         ),
-                                                        style: FlutterFlowTheme
-                                                                .of(context)
-                                                            .labelSmall
-                                                            .override(
-                                                              font: GoogleFonts
-                                                                  .inter(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelSmall
-                                                                    .fontStyle,
-                                                              ),
-                                                              color: Color(
-                                                                  0xFF020202),
-                                                              letterSpacing:
-                                                                  0.0,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontStyle:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelSmall
-                                                                      .fontStyle,
-                                                              lineHeight: 1.4,
-                                                            ),
-                                                      ),
-                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -567,7 +544,7 @@ class _RideItemWidgetState extends State<RideItemWidget> {
                                 ],
                               ),
                             ),
-                          ].divide(SizedBox(height: 16.0)),
+                          ].divide(const SizedBox(height: 16.0)),
                         ),
                       ),
                     ),

@@ -1,10 +1,6 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'button3_widget.dart' show Button3Widget;
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class Button3Model extends FlutterFlowModel<Button3Widget> {
   @override

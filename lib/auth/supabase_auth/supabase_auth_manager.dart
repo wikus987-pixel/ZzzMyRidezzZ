@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '/auth/auth_manager.dart';
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/auth/auth_manager.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'email_auth.dart';
 
 import 'supabase_user_provider.dart';
@@ -115,6 +115,7 @@ class SupabaseAuthManager extends AuthManager
     );
   }
 
+  @override
   Future resetPassword({
     required String email,
     required BuildContext context,
@@ -187,7 +188,7 @@ class SupabaseAuthManager extends AuthManager
       return authUser;
     } on AuthException catch (e) {
       final errorMsg = e.message.contains('User already registered')
-          ? 'Error: The email is already in use by a different account'
+          ? 'This email is already registered. Please use the "Sign In" tab instead.'
           : 'Error: ${e.message}';
       if (!context.mounted) {
         return null;

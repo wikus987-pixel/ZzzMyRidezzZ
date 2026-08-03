@@ -1,6 +1,6 @@
 import 'package:rxdart/rxdart.dart';
 
-import '/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
 import '../base_auth_user_provider.dart';
 
 export '../base_auth_user_provider.dart';
@@ -8,6 +8,7 @@ export '../base_auth_user_provider.dart';
 class RideShareSupaSupabaseUser extends BaseAuthUser {
   RideShareSupaSupabaseUser(this.user);
   User? user;
+  @override
   bool get loggedIn => user != null;
 
   @override

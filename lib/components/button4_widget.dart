@@ -1,11 +1,8 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import 'dart:ui';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:provider/provider.dart';
 import 'button4_model.dart';
 export 'button4_model.dart';
 
@@ -22,14 +19,14 @@ class Button4Widget extends StatefulWidget {
     bool? fullWidth,
     bool? loading,
     bool? disabled,
-  })  : this.iconPresent = iconPresent ?? false,
-        this.iconEndPresent = iconEndPresent ?? false,
-        this.content = content ?? 'Pay Now',
-        this.variant = variant ?? 'primary',
-        this.size = size ?? 'medium',
-        this.fullWidth = fullWidth ?? true,
-        this.loading = loading ?? false,
-        this.disabled = disabled ?? false;
+  })  : iconPresent = iconPresent ?? false,
+        iconEndPresent = iconEndPresent ?? false,
+        content = content ?? 'Pay Now',
+        variant = variant ?? 'primary',
+        size = size ?? 'medium',
+        fullWidth = fullWidth ?? true,
+        loading = loading ?? false,
+        disabled = disabled ?? false;
 
   final Widget? icon;
   final bool iconPresent;
@@ -88,7 +85,7 @@ class _Button4WidgetState extends State<Button4Widget> {
           Opacity(
             opacity: valueOrDefault<double>(
               valueOrDefault<bool>(
-                widget!.loading,
+                widget.loading,
                 false,
               )
                   ? 0.0
@@ -100,13 +97,13 @@ class _Button4WidgetState extends State<Button4Widget> {
                   valueOrDefault<double>(
                     () {
                       if (valueOrDefault<String>(
-                            widget!.size,
+                            widget.size,
                             'medium',
                           ) ==
                           'small') {
                         return 16.0;
                       } else if (valueOrDefault<String>(
-                            widget!.size,
+                            widget.size,
                             'medium',
                           ) ==
                           'large') {
@@ -120,13 +117,13 @@ class _Button4WidgetState extends State<Button4Widget> {
                   valueOrDefault<double>(
                     () {
                       if (valueOrDefault<String>(
-                            widget!.size,
+                            widget.size,
                             'medium',
                           ) ==
                           'small') {
                         return 4.0;
                       } else if (valueOrDefault<String>(
-                            widget!.size,
+                            widget.size,
                             'medium',
                           ) ==
                           'large') {
@@ -140,13 +137,13 @@ class _Button4WidgetState extends State<Button4Widget> {
                   valueOrDefault<double>(
                     () {
                       if (valueOrDefault<String>(
-                            widget!.size,
+                            widget.size,
                             'medium',
                           ) ==
                           'small') {
                         return 16.0;
                       } else if (valueOrDefault<String>(
-                            widget!.size,
+                            widget.size,
                             'medium',
                           ) ==
                           'large') {
@@ -160,13 +157,13 @@ class _Button4WidgetState extends State<Button4Widget> {
                   valueOrDefault<double>(
                     () {
                       if (valueOrDefault<String>(
-                            widget!.size,
+                            widget.size,
                             'medium',
                           ) ==
                           'small') {
                         return 4.0;
                       } else if (valueOrDefault<String>(
-                            widget!.size,
+                            widget.size,
                             'medium',
                           ) ==
                           'large') {
@@ -183,7 +180,7 @@ class _Button4WidgetState extends State<Button4Widget> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (valueOrDefault<bool>(
-                    widget!.iconPresent,
+                    widget.iconPresent,
                     false,
                   ))
                     Icon(
@@ -193,7 +190,7 @@ class _Button4WidgetState extends State<Button4Widget> {
                     ),
                   Text(
                     valueOrDefault<String>(
-                      widget!.content,
+                      widget.content,
                       'Pay Now',
                     ),
                     maxLines: 1,
@@ -219,7 +216,7 @@ class _Button4WidgetState extends State<Button4Widget> {
                     overflow: TextOverflow.clip,
                   ),
                   if (valueOrDefault<bool>(
-                    widget!.iconEndPresent,
+                    widget.iconEndPresent,
                     false,
                   ))
                     Icon(
@@ -232,7 +229,7 @@ class _Button4WidgetState extends State<Button4Widget> {
           ),
           if (valueOrDefault<bool>(
             valueOrDefault<bool>(
-              widget!.loading,
+              widget.loading,
               false,
             )
                 ? true

@@ -1,9 +1,9 @@
-import '/auth/supabase_auth/auth_util.dart';
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:ride_share_supa/auth/supabase_auth/auth_util.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_icon_button.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'edit_profile_page_model.dart';
@@ -85,7 +85,32 @@ class _EditProfilePageWidgetState extends State<EditProfilePageWidget> {
     _fieldsInitialised = true;
   }
 
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Not set';
+    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
+
+  String _formatRidesCompleted(String? rides) {
+    if (rides == null || rides.isEmpty) return '0';
+    return rides;
+  }
+
+  bool _isRenewalDue(DateTime? createdDate) {
+    if (createdDate == null) return false;
+    final now = DateTime.now();
+    final difference = now.difference(createdDate);
+    return difference.inDays >= 365;
+  }
+
   Future<void> _save() async {
+    final cell = _cellController.text.trim();
+    if (!cell.startsWith('27') || cell.length < 11) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid Cell Number. Must start with 27 (e.g. 27836850208)')),
+      );
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       await UsersTable().update(
@@ -121,15 +146,19 @@ class _EditProfilePageWidgetState extends State<EditProfilePageWidget> {
   }
 
   Widget _field(String label, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text}) {
+      {TextInputType keyboardType = TextInputType.text,
+      String? hintText,
+      TextCapitalization capitalization = TextCapitalization.none}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
+        textCapitalization: capitalization,
         style: FlutterFlowTheme.of(context).bodyMedium,
         decoration: InputDecoration(
           labelText: label,
+          hintText: hintText,
           labelStyle: FlutterFlowTheme.of(context).labelMedium,
           filled: true,
           fillColor: FlutterFlowTheme.of(context).secondaryBackground,
@@ -144,6 +173,40 @@ class _EditProfilePageWidgetState extends State<EditProfilePageWidget> {
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).primary,
               width: 1.5,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _readOnlyField(String label, String value, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        initialValue: value,
+        enabled: false,
+        style: FlutterFlowTheme.of(context).bodyMedium.copyWith(
+              color: FlutterFlowTheme.of(context).secondaryText,
+            ),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: FlutterFlowTheme.of(context).labelMedium,
+          prefixIcon: Icon(icon, color: FlutterFlowTheme.of(context).alternate),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).alternate.withValues(alpha: 0.3),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 1.0,
             ),
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -213,6 +276,46 @@ class _EditProfilePageWidgetState extends State<EditProfilePageWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          Text('Account Information',
+                              style: FlutterFlowTheme.of(context)
+                                  .titleMedium
+                                  .override(
+                                      font: GoogleFonts.interTight(
+                                          fontWeight: FontWeight.bold))),
+                          _readOnlyField('Account Created',
+                              _formatDate(userProfile.accountCreatedDate),
+                              Icons.calendar_today),
+                          _readOnlyField('Completed Rides',
+                              _formatRidesCompleted(userProfile.ridesCompleted),
+                              Icons.directions_car),
+                          if (_isRenewalDue(userProfile.accountCreatedDate))
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              margin: const EdgeInsets.only(top: 8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFCC80).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: const Color(0xFFFFCC80)),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.warning_amber_rounded,
+                                      color: Color(0xFFFFCC80), size: 20),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Yearly renewal is due! Your account was created over a year ago.',
+                                      style: TextStyle(
+                                        color: Colors.orange[900],
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          const SizedBox(height: 24.0),
                           Text('Personal Information',
                               style: FlutterFlowTheme.of(context)
                                   .titleMedium
@@ -222,10 +325,12 @@ class _EditProfilePageWidgetState extends State<EditProfilePageWidget> {
                           _field('First Name', _firstNameController),
                           _field('Surname', _surnameController),
                           _field('Cell Number', _cellController,
-                              keyboardType: TextInputType.phone),
+                              keyboardType: TextInputType.phone,
+                              hintText: 'e.g. 27836850208'),
                           _field('ID Number', _idNumberController),
                           _field('Home Town', _homeTownController),
-                          _field('Vehicle Registration', _vehicleController),
+                          _field('Vehicle Registration', _vehicleController,
+                              capitalization: TextCapitalization.characters),
                           const SizedBox(height: 16.0),
                           Text('Banking Details',
                               style: FlutterFlowTheme.of(context)
@@ -258,6 +363,24 @@ class _EditProfilePageWidgetState extends State<EditProfilePageWidget> {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                           ),
+                          const SizedBox(height: 16),
+                          FFButtonWidget(
+                            onPressed: _model.isDeleting ? null : () => _showDeleteConfirmation(),
+                            text: _model.isDeleting ? 'Deleting...' : 'Delete Account',
+                            options: FFButtonOptions(
+                              width: double.infinity,
+                              height: 48.0,
+                              color: FlutterFlowTheme.of(context).error,
+                              textStyle: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .override(
+                                      font: GoogleFonts.interTight(
+                                          fontWeight: FontWeight.bold),
+                                      color: Colors.white),
+                              elevation: 0.0,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -269,5 +392,72 @@ class _EditProfilePageWidgetState extends State<EditProfilePageWidget> {
         ),
       ),
     );
+  }
+
+  Future<void> _showDeleteConfirmation() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Account'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to delete your account?'),
+                Text('This action cannot be undone.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _deleteAccount();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteAccount() async {
+    setState(() => _model.isDeleting = true);
+    try {
+      final uid = _targetUid;
+      
+      // Update the user to request deletion instead of immediate delete
+      await UsersTable().update(
+        data: {
+          'deletion_requested': true,
+        },
+        matchingRows: (q) => q.eq('uid', uid),
+      );
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Deletion request sent to admin for verification.'),
+            duration: Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to request deletion: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _model.isDeleting = false);
+    }
   }
 }

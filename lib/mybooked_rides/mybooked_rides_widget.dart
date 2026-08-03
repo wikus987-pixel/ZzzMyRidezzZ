@@ -9,7 +9,6 @@ import '/pages/my_created_rides/my_created_rides_widget.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'mybooked_rides_model.dart';
 export 'mybooked_rides_model.dart';
 
@@ -44,12 +43,24 @@ class _MybookedRidesWidgetState extends State<MybookedRidesWidget> {
   late MybookedRidesModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  
+  // Stream for booked rides - created once in initState
+  late final Stream<List<PendingPaymentsRow>> _bookedRidesStream;
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => MybookedRidesModel());
-
+    
+    // Create the stream once to ensure consistent data loading
+    _bookedRidesStream = SupaFlow.client
+        .from('PendingPayments')
+        .stream(primaryKey: ['id'])
+        .map((rows) => rows
+            .map((r) => PendingPaymentsRow(r))
+            .where((r) => r.bookedBy == currentUserUid)
+            .toList());
+    
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -235,41 +246,36 @@ class _MybookedRidesWidgetState extends State<MybookedRidesWidget> {
                         },
                       ),
                       child: Scrollbar(
-                        child: SingleChildScrollView(
-                          primary: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(24.0),
-                                child: Container(
-                                  child:
-                                      FutureBuilder<List<PendingPaymentsRow>>(
-                                    future: PendingPaymentsTable().queryRows(
-                                      queryFn: (q) => q.eqOrNull(
-                                        'BookedBy',
-                                        currentUserUid,
-                                      ),
-                                    ),
-                                    builder: (context, snapshot) {
-                                      // Customize what your widget looks like when it's loading.
-                                      if (!snapshot.hasData) {
-                                        return Center(
-                                          child: SizedBox(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            child: CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                FlutterFlowTheme.of(context)
-                                                    .primary,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }
+child: SingleChildScrollView(
+                           primary: false,
+                           child: Column(
+                             mainAxisSize: MainAxisSize.min,
+                             mainAxisAlignment: MainAxisAlignment.start,
+                             crossAxisAlignment: CrossAxisAlignment.stretch,
+                             children: [
+                               Padding(
+                                 padding: EdgeInsets.all(24.0),
+                                 child: Container(
+                                   child:
+                                       StreamBuilder<List<PendingPaymentsRow>>(
+                                     stream: _bookedRidesStream,
+                                     builder: (context, snapshot) {
+                                       // Customize what your widget looks like when it's loading.
+                                       if (!snapshot.hasData) {
+                                         return Center(
+                                           child: SizedBox(
+                                             width: 50.0,
+                                             height: 50.0,
+                                             child: CircularProgressIndicator(
+                                               valueColor:
+                                                   AlwaysStoppedAnimation<Color>(
+                                                 FlutterFlowTheme.of(context)
+                                                     .primary,
+                                               ),
+                                             ),
+                                           ),
+                                         );
+                                       }
                                       List<PendingPaymentsRow>
                                           listViewPendingPaymentsRowList =
                                           snapshot.data!;
@@ -285,68 +291,15 @@ class _MybookedRidesWidgetState extends State<MybookedRidesWidget> {
                                           final listViewPendingPaymentsRow =
                                               listViewPendingPaymentsRowList[
                                                   listViewIndex];
-                                          return Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            children: [
-                                              FutureBuilder<
-                                                  List<PendingPaymentsRow>>(
-                                                future: PendingPaymentsTable()
-                                                    .querySingleRow(
-                                                  queryFn: (q) => q.eqOrNull(
-                                                    'BookedBy',
-                                                    currentUserUid,
-                                                  ),
-                                                ),
-                                                builder: (context, snapshot) {
-                                                  // Customize what your widget looks like when it's loading.
-                                                  if (!snapshot.hasData) {
-                                                    return Center(
-                                                      child: SizedBox(
-                                                        width: 50.0,
-                                                        height: 50.0,
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          valueColor:
-                                                              AlwaysStoppedAnimation<
-                                                                  Color>(
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primary,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                                  List<PendingPaymentsRow>
-                                                      bookedRidesCard2PendingPaymentsRowList =
-                                                      snapshot.data!;
-
-                                                  final bookedRidesCard2PendingPaymentsRow =
-                                                      bookedRidesCard2PendingPaymentsRowList
-                                                              .isNotEmpty
-                                                          ? bookedRidesCard2PendingPaymentsRowList
-                                                              .first
-                                                          : null;
-
-                                                  return BookedRidesCardWidget(
-                                                    key: Key(
-                                                        'Keywz9_${listViewIndex}_of_${listViewPendingPaymentsRowList.length}'),
-                                                    destination:
-                                                        '${listViewPendingPaymentsRow.rideReference ?? ''}',
-                                                    status: listViewPendingPaymentsRow
-                                                            .status ??
-                                                        'Pending',
-                                                    rideReference:
-                                                        listViewPendingPaymentsRow
-                                                            .rideReference,
-                                                  );
-                                                },
-                                              ),
-                                            ],
+                                          return BookedRidesCardWidget(
+                                            key: Key(
+                                                'Keywz9_${listViewIndex}_of_${listViewPendingPaymentsRowList.length}'),
+                                            status: listViewPendingPaymentsRow
+                                                    .status ??
+                                                'Pending',
+                                            rideReference:
+                                                listViewPendingPaymentsRow
+                                                    .rideReference,
                                           );
                                         },
                                       );
@@ -369,7 +322,7 @@ class _MybookedRidesWidgetState extends State<MybookedRidesWidget> {
                   child: Padding(
                     padding: EdgeInsets.all(24.0),
                     child: Container(
-                      child: Container(
+                      child: SizedBox(
                         width: 0.0,
                         height: 0.0,
                       ),

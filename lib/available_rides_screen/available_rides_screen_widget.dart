@@ -1,11 +1,13 @@
-import '/backend/supabase/supabase.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
-import '/index.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_widgets.dart';
+import 'package:ride_share_supa/flutter_flow/custom_functions.dart' as functions;
+import 'package:ride_share_supa/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'available_rides_screen_model.dart';
 export 'available_rides_screen_model.dart';
 
@@ -32,12 +34,64 @@ class _AvailableRidesScreenWidgetState
   
   String _searchTerm = '';
   final _searchController = TextEditingController();
+  String? _userCurrentCity;
+  
+  Stream<List<RidesRow>>? _ridesStream;
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => AvailableRidesScreenModel());
+    _initializeStream();
+    _determinePosition();
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+  }
+
+  Future<void> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    try {
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return;
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) return;
+      }
+      
+      if (permission == LocationPermission.deniedForever) return;
+
+      Position position = await Geolocator.getCurrentPosition();
+      List<Placemark> placemarks = await GeocodingPlatform.instance.placemarkFromCoordinates(position.latitude, position.longitude);
+      
+      if (placemarks.isNotEmpty) {
+        if (mounted) {
+          setState(() {
+            _userCurrentCity = placemarks.first.locality?.toLowerCase();
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Location Error: $e');
+    }
+  }
+
+  void _initializeStream() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (!mounted) return;
+      setState(() {
+        _ridesStream = SupaFlow.client
+            .from('rides')
+            .stream(primaryKey: ['id'])
+            .order('id', ascending: false) // Latest created first by default
+            .map((rows) => rows
+                .map((r) => RidesRow(r))
+                .where((r) => (r.rideStatus ?? '').toLowerCase() != 'completed')
+                .toList());
+      });
+    });
   }
 
   @override
@@ -108,37 +162,67 @@ class _AvailableRidesScreenWidgetState
                 ),
                 Expanded(
                   child: StreamBuilder<List<RidesRow>>(
-                    stream: SupaFlow.client
-                        .from('rides')
-                        .stream(primaryKey: ['id'])
-                        .order('departure_time')
-                        .map((rows) => rows
-                            .map((r) => RidesRow(r))
-                            .where((r) {
-                              final matchStatus = r.rideStatus?.toLowerCase() != 'completed';
-                              final matchSearch = _searchTerm.isEmpty || 
-                                (r.departureLocation?.toLowerCase().contains(_searchTerm) ?? false) ||
-                                (r.arrivalLocation?.toLowerCase().contains(_searchTerm) ?? false);
-                              return matchStatus && matchSearch;
-                            })
-                            .toList()),
+                    stream: _ridesStream ?? const Stream.empty(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return Center(
-                          child: Text(
-                            'Could not load rides. Please try again.',
-                            style: FlutterFlowTheme.of(context).bodyMedium,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Connection lost',
+                                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  font: GoogleFonts.inter(),
+                                  color: FlutterFlowTheme.of(context).error,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              FFButtonWidget(
+                                onPressed: () => _initializeStream(),
+                                text: 'Retry',
+                                options: FFButtonOptions(
+                                  width: 100,
+                                  height: 40,
+                                  color: FlutterFlowTheme.of(context).primary,
+                                  textStyle: const TextStyle(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }
 
-                      if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+                      if (!snapshot.hasData) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
 
-                      final rides = snapshot.data ?? [];
+                      // Sort and filter rides
+                      final rides = (snapshot.data ?? []).where((r) {
+                        final matchSearch = _searchTerm.isEmpty || 
+                          (r.departureLocation?.toLowerCase().contains(_searchTerm) ?? false) ||
+                          (r.arrivalLocation?.toLowerCase().contains(_searchTerm) ?? false);
+                        return matchSearch;
+                      }).toList();
+
+                      // Custom Sorting:
+                      // 1. Departure Location matching user's LIVE current city first
+                      // 2. Latest ID (Latest Created) first
+                      rides.sort((a, b) {
+                        // Rule 1: Current City match
+                        if (_userCurrentCity != null) {
+                          final aMatch = a.departureLocation?.toLowerCase() == _userCurrentCity;
+                          final bMatch = b.departureLocation?.toLowerCase() == _userCurrentCity;
+                          if (aMatch != bMatch) {
+                            return aMatch ? -1 : 1;
+                          }
+                        }
+
+                        // Rule 2: Latest ID (Newest created rides)
+                        return b.id.compareTo(a.id);
+                      });
 
                       if (rides.isEmpty) {
                         return Center(
@@ -225,13 +309,13 @@ Color rideStatusColor(BuildContext context, RidesRow ride) {
     return Colors.purple;
   }
   final seats = ride.seatsAvailable ?? 0;
-  if (seats <= 0) {
-    return FlutterFlowTheme.of(context).error;
+  if (seats >= 2) {
+    return FlutterFlowTheme.of(context).success; // Green
   }
   if (seats == 1) {
-    return Colors.orange;
+    return const Color(0xFFFFCC80); // Lighter Orange
   }
-  return FlutterFlowTheme.of(context).success;
+  return FlutterFlowTheme.of(context).error; // 0 seats
 }
 
 String rideStatusText(RidesRow ride) {
@@ -242,10 +326,7 @@ String rideStatusText(RidesRow ride) {
   if (seats <= 0) {
     return 'Full';
   }
-  if (seats == 1) {
-    return '1 Seat Left';
-  }
-  return ride.rideStatus ?? 'Open';
+  return '$seats Seats';
 }
 
 class _RideListCard extends StatelessWidget {
@@ -377,64 +458,94 @@ class _RideListCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.event_seat_rounded,
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            size: 16.0,
+                          Text(
+                            'R${functions.addMarkup(ride.pricePerSeat ?? 0.0, 1)} / seat',
+                            style: FlutterFlowTheme.of(context).titleSmall.override(
+                                  font: GoogleFonts.interTight(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  color: FlutterFlowTheme.of(context).primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
-                          const SizedBox(width: 4.0),
-                          Flexible(
-                            child: Text(
-                              '${ride.seatsAvailable ?? 0} seats left',
-                              style: FlutterFlowTheme.of(context).labelSmall,
-                              overflow: TextOverflow.ellipsis,
+                          if (ride.pricePerParcel != null && (ride.numberOfParcels ?? 0) > 0)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Text(
+                                'R${functions.addParcelMarkup(ride.pricePerParcel ?? 0.0, 1)} / parcel',
+                                style: FlutterFlowTheme.of(context).titleSmall.override(
+                                      font: GoogleFonts.interTight(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      color: FlutterFlowTheme.of(context).secondary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      'R${functions.addMarkup(ride.pricePerSeat ?? 0.0, 1)} / seat',
-                      textAlign: TextAlign.center,
-                      style: FlutterFlowTheme.of(context).titleSmall.override(
-                            font: GoogleFonts.interTight(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            color: FlutterFlowTheme.of(context).primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    const SizedBox(width: 8),
-                    Row(
+                    Column(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Container(
-                          width: 85.0,
-                          height: 32.0,
-                          decoration: BoxDecoration(
-                            color: rideStatusColor(context, ride),
-                            borderRadius: BorderRadius.circular(9999.0),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            rideStatusText(ride),
-                            textAlign: TextAlign.center,
-                            style: FlutterFlowTheme.of(context)
-                                .labelSmall
-                                .override(
-                                  font: GoogleFonts.inter(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                              height: 32.0,
+                              decoration: BoxDecoration(
+                                color: rideStatusColor(context, ride),
+                                borderRadius: BorderRadius.circular(9999.0),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                rideStatusText(ride),
+                                textAlign: TextAlign.center,
+                                style: FlutterFlowTheme.of(context)
+                                    .labelSmall
+                                    .override(
+                                      font: GoogleFonts.inter(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                    ),
+                              ),
+                            ),
+                            if (ride.numberOfParcels != null && (ride.numberOfParcels ?? 0) > 0) ...[
+                               const SizedBox(width: 4),
+                               Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                height: 32.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.blueAccent,
+                                  borderRadius: BorderRadius.circular(9999.0),
                                 ),
-                          ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  '${ride.numberOfParcels} Parcels',
+                                  textAlign: TextAlign.center,
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelSmall
+                                      .override(
+                                        font: GoogleFonts.inter(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(height: 8),
                         InkWell(
                           onTap: onTap,
                           child: Icon(

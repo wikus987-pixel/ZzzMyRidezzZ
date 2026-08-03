@@ -1,7 +1,7 @@
-import '/flutter_flow/flutter_flow_util.dart';
-import '/components/location_input_widget.dart';
-import '/components/location_input_arriva_widget.dart';
-import '/components/datetime_picker_widget.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/components/location_input_widget.dart';
+import 'package:ride_share_supa/components/location_input_arriva_widget.dart';
+import 'package:ride_share_supa/components/datetime_picker_widget.dart';
 import 'req_rides_page_widget.dart' show ReqRidesPageWidget;
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,8 @@ class ReqRidesPageModel extends FlutterFlowModel<ReqRidesPageWidget> {
   DateTime? arrivalDateTime;
 
   // Local state for seats needed
-  int seatsNeeded = 1;
+  int seatsNeeded = 0;
+  int parcelsNeeded = 0;
 
   @override
   void initState(BuildContext context) {

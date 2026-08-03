@@ -1,4 +1,4 @@
-import '/backend/supabase/supabase.dart';
+import 'package:ride_share_supa/backend/supabase/supabase.dart';
 
 Future<User?> emailSignInFunc(
   String email,

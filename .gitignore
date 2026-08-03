@@ -145,3 +145,8 @@ skills/
 *.msi
 *.dll
 *.dmg
+*.apk
+*.mp4
+
+# Skip Android for now as per user request (not needed for iOS cloud build)
+android/

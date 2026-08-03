@@ -1,0 +1,305 @@
+import 'package:ride_share_supa/flutter_flow/flutter_flow_theme.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_util.dart';
+import 'package:ride_share_supa/flutter_flow/flutter_flow_widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:google_fonts/google_fonts.dart';
+
+class PaymentPageWidget extends StatefulWidget {
+  const PaymentPageWidget({
+    super.key,
+    this.initialAmount,
+    this.initialEmail,
+    this.paymentDescription,
+    this.paymentType,
+    this.rideId,
+    this.seats,
+  });
+
+  final double? initialAmount;
+  final String? initialEmail;
+  final String? paymentDescription;
+  final String? paymentType;
+  final int? rideId;
+  final int? seats;
+
+  static String routeName = 'PaymentPage';
+  static String routePath = 'paymentPage';
+
+  @override
+  State<PaymentPageWidget> createState() => _PaymentPageWidgetState();
+}
+
+class _PaymentPageWidgetState extends State<PaymentPageWidget> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  late TextEditingController _customAmountController;
+  late FocusNode _customAmountFocusNode;
+  
+  bool _isProcessingRegistration = false;
+  bool _isProcessingBooking = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _customAmountController = TextEditingController();
+    _customAmountFocusNode = FocusNode();
+    
+    _customAmountController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _customAmountController.dispose();
+    _customAmountFocusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleYocoPayment(double amount, bool isRegistration) async {
+    if (amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid amount')),
+      );
+      return;
+    }
+
+    setState(() {
+      if (isRegistration) {
+        _isProcessingRegistration = true;
+      } else {
+        _isProcessingBooking = true;
+      }
+    });
+
+    try {
+      // Wiring for Webhook: Use rideId as reference for bookings
+      final String ref = isRegistration 
+          ? 'REG_${widget.initialEmail ?? DateTime.now().millisecondsSinceEpoch}'
+          : (widget.rideId?.toString() ?? 'BOOK_${DateTime.now().millisecondsSinceEpoch}');
+
+      final response = await http.post(
+        Uri.parse('https://empawnadqvmalfqvbkbp.supabase.co/functions/v1/yoco-checkout'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'amount_in_cents': (amount * 100).toInt(),
+          'currency': 'ZAR',
+          'reference': ref,
+          'customer_email': widget.initialEmail ?? '',
+          'description': isRegistration ? 'Registration Fee' : (widget.paymentDescription ?? 'RideShare Payment'),
+          'metadata': {
+            'app_id': '3e7ef11f-d23c-4259-be49-3fece6f6c461',
+            'ride_id': widget.rideId?.toString() ?? 'N/A',
+            'payment_type': isRegistration ? 'registration' : 'booking',
+          },
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to create checkout: ${response.body}');
+      }
+
+      final data = jsonDecode(response.body);
+      final redirectUrl = data['redirect_url'] as String;
+
+      if (!mounted) return;
+
+      final controller = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onNavigationRequest: (NavigationRequest request) {
+              if (request.url.contains('yoco-success')) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Payment Successful!'), backgroundColor: Colors.green),
+                );
+                return NavigationDecision.prevent;
+              } else if (request.url.contains('cancelled') || request.url.contains('failed')) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Payment failed or cancelled.'), backgroundColor: Colors.red),
+                );
+                return NavigationDecision.prevent;
+              }
+              return NavigationDecision.navigate;
+            },
+          ),
+        )
+        ..loadRequest(Uri.parse(redirectUrl));
+
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => Scaffold(
+            appBar: AppBar(
+              title: const Text('Yoco Checkout'),
+              leading: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+            body: WebViewWidget(controller: controller),
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Payment error: $e')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessingRegistration = false;
+          _isProcessingBooking = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      appBar: AppBar(
+        backgroundColor: FlutterFlowTheme.of(context).primary,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 30.0),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'Complete Payment',
+          style: FlutterFlowTheme.of(context).headlineMedium.override(
+                font: GoogleFonts.interTight(fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontSize: 22.0,
+              ),
+        ),
+        centerTitle: true,
+        elevation: 2.0,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildRegistrationCard(),
+              const SizedBox(height: 24),
+              _buildBookingCard(),
+              const SizedBox(height: 32),
+              const Center(
+                child: Text(
+                  'Pay by card — no account required',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
+              ),
+              const SizedBox(height: 48),
+              FFButtonWidget(
+                onPressed: () => Navigator.of(context).pop(),
+                text: 'Cancel',
+                options: FFButtonOptions(
+                  height: 50,
+                  color: FlutterFlowTheme.of(context).alternate,
+                  textStyle: TextStyle(color: FlutterFlowTheme.of(context).primaryText),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRegistrationCard() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF4B39EF), width: 1.5),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
+      ),
+      child: Column(
+        children: [
+          const Text('Registration Fee', style: TextStyle(color: Colors.grey, fontSize: 14)),
+          const SizedBox(height: 12),
+          const Text(
+            "R45.00",
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xFF4B39EF)),
+          ),
+          const SizedBox(height: 24),
+          FFButtonWidget(
+            onPressed: _isProcessingRegistration ? null : () => _handleYocoPayment(45.0, true),
+            text: _isProcessingRegistration ? 'Processing...' : "Pay R45.00",
+            options: FFButtonOptions(
+              height: 55,
+              width: double.infinity,
+              color: const Color(0xFF003087),
+              textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBookingCard() {
+    double bookingAmount = widget.initialAmount ?? 0.0;
+    bool hasInitial = bookingAmount > 0;
+    
+    double currentVal = hasInitial ? bookingAmount : (double.tryParse(_customAmountController.text) ?? 0.0);
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF39D2C0), width: 1.5),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
+      ),
+      child: Column(
+        children: [
+          const Text('Booking Amount', style: TextStyle(color: Colors.grey, fontSize: 14)),
+          const SizedBox(height: 12),
+          if (hasInitial)
+            Text(
+              "R${bookingAmount.toStringAsFixed(2)}",
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xFF39D2C0)),
+            )
+          else
+            TextFormField(
+              controller: _customAmountController,
+              focusNode: _customAmountFocusNode,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              decoration: InputDecoration(
+                hintText: 'Enter ZAR Amount',
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Colors.grey)),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFF39D2C0))),
+              ),
+            ),
+          const SizedBox(height: 24),
+          FFButtonWidget(
+            onPressed: _isProcessingBooking ? null : () => _handleYocoPayment(currentVal, false),
+            text: _isProcessingBooking ? 'Processing...' : "Pay R${currentVal.toStringAsFixed(2)}",
+            options: FFButtonOptions(
+              height: 55,
+              width: double.infinity,
+              color: const Color(0xFF39D2C0),
+              textStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
