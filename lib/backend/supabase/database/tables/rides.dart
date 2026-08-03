@@ -64,4 +64,10 @@ class RidesRow extends SupabaseDataRow {
   double? get pricePerParcel => getField<double>('price_per_parcel');
   set pricePerParcel(double? value) =>
       setField<double>('price_per_parcel', value);
+
+  String? get pickup => getField<String>('Pickup');
+  set pickup(String? value) => setField<String>('Pickup', value);
+
+  String? get dropoff => getField<String>('Dropoff');
+  set dropoff(String? value) => setField<String>('Dropoff', value);
 }
