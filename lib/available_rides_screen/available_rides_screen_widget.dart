@@ -514,6 +514,9 @@ class _RideListCard extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12.0),
                               height: 32.0,
@@ -536,6 +539,33 @@ class _RideListCard extends StatelessWidget {
                                     ),
                               ),
                             ),
+                            if (ride.numberOfParcels != null && (ride.numberOfParcels ?? 0) > 0) ...[
+                               const SizedBox(width: 4),
+                               Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                height: 32.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.blueAccent,
+                                  borderRadius: BorderRadius.circular(9999.0),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  '${ride.numberOfParcels} Parcels',
+                                  textAlign: TextAlign.center,
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelSmall
+                                      .override(
+                                        font: GoogleFonts.inter(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                             if (ride.numberOfParcels != null && (ride.numberOfParcels ?? 0) > 0) ...[
                                const SizedBox(width: 4),
                                Container(
