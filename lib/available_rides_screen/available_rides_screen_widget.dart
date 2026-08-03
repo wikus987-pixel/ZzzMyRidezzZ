@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
 import 'available_rides_screen_model.dart';
 export 'available_rides_screen_model.dart';
 
@@ -65,7 +64,7 @@ class _AvailableRidesScreenWidgetState
       if (permission == LocationPermission.deniedForever) return;
 
       Position position = await Geolocator.getCurrentPosition();
-      List<Placemark> placemarks = await GeocodingPlatform.instance.placemarkFromCoordinates(position.latitude, position.longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
       
       if (placemarks.isNotEmpty) {
         if (mounted) {
@@ -396,6 +395,14 @@ class _RideListCard extends StatelessWidget {
                                 ),
                           ),
                           Text(
+                            'Pickup: ${valueOrDefault<String>(ride.pickup, 'TBA')}',
+                            style: FlutterFlowTheme.of(context).bodySmall.override(
+                                  font: GoogleFonts.inter(),
+                                  color: FlutterFlowTheme.of(context).secondaryText,
+                                  fontSize: 10,
+                                ),
+                          ),
+                          Text(
                             dateTimeFormat(
                               'd MMMM y - HH:mm',
                               ride.departureTime,
@@ -432,6 +439,15 @@ class _RideListCard extends StatelessWidget {
                                   font: GoogleFonts.interTight(),
                                   color:
                                       FlutterFlowTheme.of(context).primaryText,
+                                ),
+                          ),
+                          Text(
+                            'Drop-off: ${valueOrDefault<String>(ride.dropoff, 'TBA')}',
+                            textAlign: TextAlign.end,
+                            style: FlutterFlowTheme.of(context).bodySmall.override(
+                                  font: GoogleFonts.inter(),
+                                  color: FlutterFlowTheme.of(context).secondaryText,
+                                  fontSize: 10,
                                 ),
                           ),
                           Text(
