@@ -116,10 +116,14 @@ class _RideDetailsScreenWidgetState extends State<RideDetailsScreenWidget>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _detailRow('Departure', ride.departureLocation),
-                  _detailRow('Time', dateTimeFormat("d MMMM y - HH:mm", ride.departureTime)),
-                  _detailRow('Arrival', ride.arrivalLocation),
-                  _detailRow('Time', dateTimeFormat("d MMMM y - HH:mm", ride.arrivalTime)),
+                  _detailRow('Departure Town', ride.departureLocation),
+                  _detailRow('Pickup Point', ride.pickup ?? 'TBA'),
+                  _detailRow('Departure Time', dateTimeFormat("d MMMM y - HH:mm", ride.departureTime)),
+                  const Divider(),
+                  _detailRow('Arrival Town', ride.arrivalLocation),
+                  _detailRow('Drop-off Point', ride.dropoff ?? 'TBA'),
+                  _detailRow('Arrival Time', dateTimeFormat("d MMMM y - HH:mm", ride.arrivalTime)),
+                  const Divider(),
                    
                   // Available Seats and Parcels with color coding
                   Padding(
