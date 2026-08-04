@@ -395,7 +395,7 @@ class _RideListCard extends StatelessWidget {
                                 ),
                           ),
                           Text(
-                            'Pickup: ${valueOrDefault<String>(ride.pickup, 'TBA')}',
+                            'Pickup Point: ${valueOrDefault<String>(ride.pickup, 'TBA')}',
                             style: FlutterFlowTheme.of(context).bodySmall.override(
                                   font: GoogleFonts.inter(),
                                   color: FlutterFlowTheme.of(context).secondaryText,
@@ -442,7 +442,7 @@ class _RideListCard extends StatelessWidget {
                                 ),
                           ),
                           Text(
-                            'Drop-off: ${valueOrDefault<String>(ride.dropoff, 'TBA')}',
+                            'Drop-off Point: ${valueOrDefault<String>(ride.dropoff, 'TBA')}',
                             textAlign: TextAlign.end,
                             style: FlutterFlowTheme.of(context).bodySmall.override(
                                   font: GoogleFonts.inter(),
