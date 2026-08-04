@@ -122,10 +122,12 @@ class _CreateRidesPageWidgetState extends State<CreateRidesPageWidget> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Route Details',
+                    'Route Details (Note: Tap Departure/Arrival below to set Date & Time)',
                     style: FlutterFlowTheme.of(context).titleMedium.override(
                           font: GoogleFonts.interTight(
                               fontWeight: FontWeight.w600),
+                          fontSize: 14,
+                          color: FlutterFlowTheme.of(context).primary,
                         ),
                   ),
                   const SizedBox(height: 16.0),
