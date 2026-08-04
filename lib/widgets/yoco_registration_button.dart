@@ -49,7 +49,7 @@ class _YocoRegistrationButtonState extends State<YocoRegistrationButton> {
 
       // 2. Call Yoco Checkout Function
       final response = await SupaFlow.client.functions.invoke(
-        'yoco-checkout',
+        'yoco-checkout-registration',
         body: {
           'amount_in_cents': 4500, // R45.00
           'currency': 'ZAR',
