@@ -9,6 +9,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ride_share_supa/widgets/yoco_registration_button.dart';
 import 'login_page_model.dart';
 export 'login_page_model.dart';
 
@@ -513,6 +514,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
           ),
           const SizedBox(height: 24),
           if (_isPaymentVerified) _buildCreateAccountButton(),
+          YocoRegistrationButton(
+            email: _model.emailAddressCreateTextController.text,
+            onSuccess: () => _checkVerification(),
+          ),
           const SizedBox(height: 16),
           const Text(
             'Once paid and verified, you can set your password here to complete registration.',
